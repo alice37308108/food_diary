@@ -4,7 +4,7 @@ from django.db import models
 
 class Diary(models.Model):
     date = models.DateField(verbose_name='日付', unique=True)
-    hours_of_sleep = models.IntegerField(verbose_name='睡眠時間', )
+    hours_of_sleep = models.IntegerField(verbose_name='睡眠時間', validators=[MinValueValidator(1), MaxValueValidator(24)])
     sleep_quality = models.IntegerField(verbose_name='睡眠の質', validators=[MinValueValidator(1), MaxValueValidator(5)])
     weight = models.FloatField(verbose_name='体重', blank=True, null=True)
     memo = models.CharField(max_length=200, blank=True, verbose_name='メモ')

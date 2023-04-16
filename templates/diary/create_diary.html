@@ -1,0 +1,14 @@
+{% extends "diary/base.html" %}
+{% load static %}
+
+{% block content %}
+    <h2>🍚食日記登録🍚</h2>
+        <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <table width="500" height="300">
+                {{ form.as_table }}
+            </table>
+            <p>
+                <input type="submit" value="作成する" class="button">
+            </p>
+        </form>
+{% endblock %}

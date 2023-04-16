@@ -44,6 +44,16 @@ class ItemDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
+class CreateDiaryView(LoginRequiredMixin, CreateView):
+    model = Diary
+    template_name = 'diary/create_diary.html'
+    fields = ['date', 'hours_of_sleep', 'sleep_quality', 'weight', 'memo']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
 class SignupView(CreateView):
     form_class = SignupForm
     template_name = 'diary/signup.html'
