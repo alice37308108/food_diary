@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, TemplateView, CreateView, DetailView
 
 from diary.forms import SignupForm, LoginForm
-from diary.models import Diary
+from diary.models import Diary, Meal
 
 
 class IndexView(TemplateView):
@@ -48,6 +48,17 @@ class CreateDiaryView(LoginRequiredMixin, CreateView):
     model = Diary
     template_name = 'diary/create_diary.html'
     fields = ['date', 'hours_of_sleep', 'sleep_quality', 'weight', 'memo']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CreateMealView(LoginRequiredMixin, CreateView):
+    model = Meal
+    template_name = 'diary/create_meal.html'
+    fields = ['meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
+              'fresh_vegetable', 'fermented_food', 'supplement', 'memo']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
