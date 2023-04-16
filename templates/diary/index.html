@@ -1,0 +1,23 @@
+{% extends "diary/base.html" %}
+{% load static %}
+
+{% block content %}
+    <p>
+        {% if user.is_authenticated %}
+            {{ now }}<br>
+            {{ message }} {{ user.username }}さん
+        {% endif %}
+    </p>
+
+    <img src="{% static "/diary/images/index.png" %}" alt="index" width="500" height="470">
+{##}
+{#    <p>#}
+{#        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'breakfast:create' %}">#}
+{#            <i class="fa-solid fa-check"></i> ごはん登録#}
+{#        </button>#}
+{#        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'breakfast:list' %}">#}
+{#            <i class="fa-regular fa-pen-to-square"></i> ごはん一覧#}
+{#        </button>#}
+{#    </p>#}
+
+{% endblock %}

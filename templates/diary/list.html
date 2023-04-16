@@ -1,0 +1,12 @@
+{% extends "diary/base.html" %}
+{% load static %}
+
+{% block content %}
+    <h3>　食日記一覧🍚</h3>
+
+    {% for item in object_list %}
+        <ul>
+            <li>{{ item.date }}</li>
+        </ul>
+    {% endfor %}
+{% endblock %}

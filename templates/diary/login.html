@@ -1,0 +1,13 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<body>
+    <h2>ログイン</h2>
+    <form action="{% url 'diary:login' %}" method="post">
+    {% csrf_token %}
+        {{ form.as_p }}
+        <p><input type="hidden" name="next" value="{{next}}"></p>
+        <p><input type="submit" value="ログイン"></p>
+    </form>
+</body>
+</html>

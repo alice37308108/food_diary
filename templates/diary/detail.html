@@ -1,0 +1,60 @@
+{% extends "diary/base.html" %}
+{% load static %}
+
+{% block content %}
+    <!-- Diary -->
+    <h3>{{ diary.date }}の日記</h3>
+    <ul>
+        <li>睡眠時間: {{ diary.hours_of_sleep }}</li>
+        <li>睡眠の質: {{ diary.sleep_quality }}</li>
+        <li>体重: {{ diary.weight }}</li>
+        <li>メモ: {{ diary.memo }}</li>
+    </ul>
+
+    <!-- Meal -->
+    {% for meal in diary.meal_set.all %}
+        <h3>{{ meal.get_meal_type_display }}🍚</h3>
+
+        <!-- photo -->
+        {% if meal.photo %}
+            <img width="200px" height="200px" src="{{ meal.photo.url }}" alt="{{ meal.meal_type }}">
+        {% else %}
+            <td class="td_image">No image</td>
+        {% endif %}
+
+        <table border="1">
+            <tr>
+                <th>まめ</th>
+                <th>ごま</th>
+                <th>わかめ</th>
+                <th>野菜</th>
+                <th>さかな</th>
+                <th>きのこ</th>
+                <th>いも</th>
+                <th>生野菜</th>
+                <th>発酵食品</th>
+            </tr>
+            <tr>
+                <td>{{ meal.get_bean }}</td>
+                <td>{{ meal.get_sesame }}</td>
+                <td>{{ meal.get_seaweed }}</td>
+                <td>{{ meal.get_vegetable }}</td>
+                <td>{{ meal.get_fish }}</td>
+                <td>{{ meal.get_mushroom }}</td>
+                <td>{{ meal.get_potato }}</td>
+                <td>{{ meal.get_fresh_vegetable }}</td>
+                <td>{{ meal.get_fermented_food }}</td>
+            </tr>
+        </table>
+
+        <li>サプリ: {% for supplement in meal.supplement.all %}{{ supplement.name }}{% if not forloop.last %},
+        {% endif %}{% endfor %}</li>
+        <li>メモ: {{ meal.memo }}</li>
+
+        {#        </ul>#}
+    {% empty %}
+        <p>この日はまだ食事を追加していません。</p>
+    {% endfor %}
+
+{% endblock %}
+
