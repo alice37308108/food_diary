@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{#{% extends "diary/base.html" %}#}
+{% load static %}
+
+<!-- CSSファイルを読み込み -->
+<head>
+    <link rel="stylesheet" href="{% static 'css/mago.css' %}">
+</head>
+
+{% block content %}
+    <section>
+        <h3>まごはやさしいを知ろう！</h3>
+        <div class="center">
+            <div>
+                <img src="{% static "/diary/images/mago1.png" %}" alt="bean" width="500" height="470">
+            </div>
+            <ul>
+                <li><img src="{% static "/diary/images/mago2.png" %}" class="mago" alt="sesame" width="500"
+                         height="470"></li>
+                <li><img src="{% static "/diary/images/mago3.png" %}" class="mago" alt="seaweed" width="500"
+                         height="470"></li>
+                <li><img src="{% static "/diary/images/mago4.png" %}" class="mago" alt="vegetable" width="500"
+                         height="470"></li>
+            </ul>
+        </div>
+    </section>
+
+{% endblock %}
+</html>

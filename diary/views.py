@@ -30,7 +30,11 @@ class ListDiaryView(ListView):
     model = Diary
     template_name = 'diary/list.html'
     paginate_by = 5
-    ordering = ['-date'] # 降順
+    ordering = ['-date']  # 降順
+
+
+class MagoDiaryView(TemplateView):
+    template_name = 'diary/mago.html'
 
 
 class ItemDetailView(LoginRequiredMixin, DetailView):
