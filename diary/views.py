@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -29,6 +29,8 @@ class IndexView(TemplateView):
 class ListDiaryView(ListView):
     model = Diary
     template_name = 'diary/list.html'
+    paginate_by = 5
+    ordering = ['-date'] # 降順
 
 
 class ItemDetailView(LoginRequiredMixin, DetailView):
@@ -53,11 +55,16 @@ class CreateDiaryView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['date'] = date.today()
+        return initial
+
 
 class CreateMealView(LoginRequiredMixin, CreateView):
     model = Meal
     template_name = 'diary/create_meal.html'
-    fields = ['meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
+    fields = ['date', 'meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
               'fresh_vegetable', 'fermented_food', 'supplement', 'memo']
 
     def form_valid(self, form):
