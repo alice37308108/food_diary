@@ -1,29 +1,60 @@
-<!DOCTYPE html>
-{#{% extends "diary/base.html" %}#}
+{#{% extends "base.html" %}#}
 {% load static %}
 
-<!-- CSSファイルを読み込み -->
 <head>
-    <link rel="stylesheet" href="{% static 'css/mago.css' %}">
+    <style>
+        #bigimg {
+            width: auto;
+            height: auto;
+            padding: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            max-width: 50%;
+            width: auto;
+        }
+
+        .thumb {
+            width: 100%;
+            height: auto;
+            margin: 5px;
+        }
+    </style>
+{#    <link rel="stylesheet" href="{% static 'css/mago.css' %}">#}
 </head>
 
 {% block content %}
     <section>
-        <h3>まごはやさしいを知ろう！</h3>
+        <h3>まごはやさしい</h3>
         <div class="center">
             <div>
-                <img src="{% static "/diary/images/mago1.png" %}" alt="bean" width="500" height="470">
+                <img src="{% static "/diary/images/mago1.png" %}" id="bigimg">
             </div>
             <ul>
-                <li><img src="{% static "/diary/images/mago2.png" %}" class="mago" alt="sesame" width="500"
-                         height="470"></li>
-                <li><img src="{% static "/diary/images/mago3.png" %}" class="mago" alt="seaweed" width="500"
-                         height="470"></li>
-                <li><img src="{% static "/diary/images/mago4.png" %}" class="mago" alt="vegetable" width="500"
-                         height="470"></li>
+                <li><img src="{% static "/diary/images/mago1.png" %}" class="thumb" data-img="/static/diary/images/mago1.png"></li>
+                <li><img src="{% static "/diary/images/mago2.png" %}" class="thumb" data-img="/static/diary/images/mago2.png"></li>
+                <li><img src="{% static "/diary/images/mago3.png" %}" class="thumb" data-img="/static/diary/images/mago3.png"></li>
+                <li><img src="{% static "/diary/images/mago4.png" %}" class="thumb" data-img="/static/diary/images/mago4.png"></li>
+                <li><img src="{% static "/diary/images/mago5.png" %}" class="thumb" data-img="/static/diary/images/mago5.png"></li>
+                <li><img src="{% static "/diary/images/mago6.png" %}" class="thumb" data-img="/static/diary/images/mago6.png"></li>
+                <li><img src="{% static "/diary/images/mago7.png" %}" class="thumb" data-img="/static/diary/images/mago7.png"></li>
+                <li><img src="{% static "/diary/images/mago8.png" %}" class="thumb" data-img="/static/diary/images/mago8.png"></li>
             </ul>
         </div>
     </section>
 
+    <script>
+        const thumbs = document.getElementsByClassName("thumb");
+        for (let i = 0; i < thumbs.length; i++) {
+            thumbs[i].addEventListener("click", function() {
+                let bigimg = document.getElementById("bigimg");
+                bigimg.src = this.getAttribute("data-img");
+            });
+        }
+    </script>
 {% endblock %}
-</html>

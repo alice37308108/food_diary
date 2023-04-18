@@ -1,6 +1,19 @@
-/* Path: static\css\mago.css */
-.center {
-    margin: 0 auto 0 auto;
-    max-width: 90%;
-    width: 500px;
+#bigimg {
+  width: auto;
+  height: auto;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  max-width: 90%;
+  width: 500px;
+}
+
+.thumb {
+  width: 10%;
+  height: auto;
 }
