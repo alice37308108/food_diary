@@ -3,7 +3,7 @@
 
 {% block content %}
     <section>
-        <h2>まごはやさしい🫘🥦</h2>
+        <h3>まごはやさしい🫘🥦</h3>
         <div class="center">
             <div>
                 <img src="{% static "/diary/images/mago1.png" %}" id="bigimg">
@@ -25,7 +25,8 @@
                          data-img="/static/diary/images/mago7.png"></li>
                 <li><img src="{% static "/diary/images/mago8.png" %}" class="thumb"
                          data-img="/static/diary/images/mago8.png"></li>
-            </>
+            </
+            >
         </div>
     </section>
 
@@ -38,4 +39,11 @@
             });
         }
     </script>
+
+    <p>
+        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'diary:index' %}">
+            <i class="fa-solid fa-house"></i> Topへ戻る
+        </button>
+    </p>
+
 {% endblock %}
