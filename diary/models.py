@@ -14,6 +14,8 @@ class Diary(models.Model):
     def __str__(self):  # これを書かないとadminやフォームで画面でDiary object (1)と表示される
         return self.date.strftime('%Y/%m/%d')
 
+    def get_absolute_url(self):
+        return reverse('diary:list')
 
 class Meal(models.Model):
     date = models.ForeignKey(Diary, on_delete=models.CASCADE, verbose_name='日付')

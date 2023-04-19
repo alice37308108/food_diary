@@ -1,6 +1,9 @@
+{% extends "diary/base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="ja">
+
+{% block content %}
+{#<!doctype html>#}
+{#<html lang="ja">#}
 <body>
     <h2>ログイン</h2>
     <form action="{% url 'diary:login' %}" method="post">
@@ -11,3 +14,4 @@
     </form>
 </body>
 </html>
+{% endblock %}

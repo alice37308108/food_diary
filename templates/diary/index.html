@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <p>
+    <p id="index-p">
         {% if user.is_authenticated %}
             {{ now }}<br>
             {{ message }} {{ user.username }}さん
@@ -10,14 +10,23 @@
     </p>
 
     <img src="{% static "/diary/images/index.png" %}" alt="index" width="500" height="470">
-{##}
-{#    <p>#}
-{#        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'breakfast:create' %}">#}
-{#            <i class="fa-solid fa-check"></i> ごはん登録#}
-{#        </button>#}
-{#        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'breakfast:list' %}">#}
-{#            <i class="fa-regular fa-pen-to-square"></i> ごはん一覧#}
-{#        </button>#}
-{#    </p>#}
+
+    <p>
+        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'diary:mago' %}">
+            <i class="fa-solid fa-file"></i> 腸活メモ
+        </button>
+    </p>
+
+    {% if user.is_authenticated %}
+        <p>
+            <button type="button" class="btn btn--orange btn--radius"
+                    onclick="location.href={% url 'diary:create_diary' %}">
+                <i class="fa-solid fa-check"></i> 日記登録
+            </button>
+            <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'diary:list' %}">
+                <i class="fa-regular fa-pen-to-square"></i> ごはん一覧
+            </button>
+        </p>
+    {% endif %}
 
 {% endblock %}
