@@ -1,32 +1,5 @@
-{#{% extends "base.html" %}#}
+{% extends "diary/base.html" %}
 {% load static %}
-
-<head>
-    <style>
-        #bigimg {
-            max-width: 35%;
-            height: auto;
-            padding: 10px;
-        }
-
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: space-between;
-            max-width: 50%;
-            width: auto;
-        }
-
-        .thumb {
-            width: 100%;
-            height: auto;
-            margin: 5px;
-        }
-    </style>
-    {#    <link rel="stylesheet" href="{% static 'css/mago.css' %}">#}
-</head>
 
 {% block content %}
     <section>
@@ -35,7 +8,7 @@
             <div>
                 <img src="{% static "/diary/images/mago1.png" %}" id="bigimg">
             </div>
-            <ul>
+            <ul id="mago-ul">
                 <li><img src="{% static "/diary/images/mago1.png" %}" class="thumb"
                          data-img="/static/diary/images/mago1.png"></li>
                 <li><img src="{% static "/diary/images/mago2.png" %}" class="thumb"
@@ -52,7 +25,7 @@
                          data-img="/static/diary/images/mago7.png"></li>
                 <li><img src="{% static "/diary/images/mago8.png" %}" class="thumb"
                          data-img="/static/diary/images/mago8.png"></li>
-            </ul>
+            </>
         </div>
     </section>
 
