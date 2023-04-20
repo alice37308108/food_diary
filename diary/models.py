@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -17,8 +19,9 @@ class Diary(models.Model):
     def get_absolute_url(self):
         return reverse('diary:list')
 
+
 class Meal(models.Model):
-    date = models.ForeignKey(Diary, on_delete=models.CASCADE, verbose_name='日付')
+    date = models.ForeignKey(Diary, on_delete=models.CASCADE, verbose_name='日付', to_field='date')
     DATE_CHOICES = (
         ('朝ごはん', '朝ごはん'),
         ('昼ごはん', '昼ごはん'),
@@ -38,6 +41,7 @@ class Meal(models.Model):
     supplement = models.ManyToManyField('Supplement', blank=True, verbose_name='サプリメント')
     memo = models.TextField(blank=True, verbose_name='メモ')
     photo = models.ImageField(upload_to='meal_photos/', blank=True, null=True, verbose_name='写真')
+    date = models.DateField(verbose_name='日付', default=datetime.date.today)
 
     def get_absolute_url(self):
         return reverse('diary:meal_detail', args=[str(self.id)])
