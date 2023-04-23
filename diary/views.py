@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, DetailView
 
 from diary.forms import SignupForm, LoginForm
@@ -70,6 +71,7 @@ class CreateMealView(LoginRequiredMixin, CreateView):
     template_name = 'diary/create_meal.html'
     fields = ['date', 'meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
               'fresh_vegetable', 'fermented_food', 'supplement', 'memo']
+    success_url = reverse_lazy('diary:list')
 
     def form_valid(self, form):
         form.instance.user = self.request.user

@@ -1,14 +1,21 @@
 {% extends "diary/base.html" %}
 {% load static %}
+{% load django_bootstrap5 %}
+
 
 {% block content %}
-    <h2>🍚食日記登録🍚</h2>
-        <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
-            <table width="500" height="300">
-                {{ form.as_table }}
-            </table>
-            <p>
-                <input type="submit" value="作成する" class="button">
-            </p>
-        </form>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2>🍚食日記登録🍚</h2>
+                <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                    {% bootstrap_form form %}
+                    <p>
+                        <button type="submit" class="btn btn-primary">作成</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 {% load static %}
+{% load django_bootstrap5 %}
+
 <html lang="ja">
+
 <head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     <meta charset="UTF-8">
     <title>{% block title %}食日記アプリ✨{% endblock %}</title>
     <link

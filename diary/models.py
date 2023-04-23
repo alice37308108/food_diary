@@ -2,6 +2,7 @@ import datetime
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.shortcuts import resolve_url
 from django.urls import reverse
 
 
@@ -11,13 +12,13 @@ class Diary(models.Model):
                                          validators=[MinValueValidator(1), MaxValueValidator(24)])
     sleep_quality = models.IntegerField(verbose_name='睡眠の質', validators=[MinValueValidator(1), MaxValueValidator(5)])
     weight = models.FloatField(verbose_name='体重', blank=True, null=True)
-    memo = models.CharField(max_length=200, blank=True, verbose_name='メモ')
+    memo = models.TextField(blank=True, verbose_name='メモ')
 
     def __str__(self):  # これを書かないとadminやフォームで画面でDiary object (1)と表示される
         return self.date.strftime('%Y/%m/%d')
 
     def get_absolute_url(self):
-        return reverse('diary:list')
+        return reverse('diary:detail', args=[str(self.pk)])
 
 
 class Meal(models.Model):
@@ -44,7 +45,7 @@ class Meal(models.Model):
     date = models.DateField(verbose_name='日付', default=datetime.date.today)
 
     def get_absolute_url(self):
-        return reverse('diary:meal_detail', args=[str(self.id)])
+        return reverse('diary:detail', args=[str(self.pk)])
 
     def get_bean(self):
         return '🫘' if self.bean else ''

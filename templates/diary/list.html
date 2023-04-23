@@ -6,7 +6,7 @@
 
     {% for item in object_list %}
         <ul>
-            <li>{{ item.date }}</li>
+            <a href="{{ item.get_absolute_url }}">🍚</a> {{ item.date }}
         </ul>
     {% endfor %}
 
