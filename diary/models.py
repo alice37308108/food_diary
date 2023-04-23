@@ -42,7 +42,7 @@ class Meal(models.Model):
     supplement = models.ManyToManyField('Supplement', blank=True, verbose_name='サプリメント')
     memo = models.TextField(blank=True, verbose_name='メモ')
     photo = models.ImageField(upload_to='meal_photos/', blank=True, null=True, verbose_name='写真')
-    date = models.DateField(verbose_name='日付', default=datetime.date.today)
+    # date = models.DateField(verbose_name='日付', default=datetime.date.today)
 
     def get_absolute_url(self):
         return reverse('diary:detail', args=[str(self.pk)])
