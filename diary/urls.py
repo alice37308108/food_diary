@@ -13,6 +13,7 @@ urlpatterns = [
     path('create_diary/', views.CreateDiaryView.as_view(), name='create_diary'),
     path('create_meal/', views.CreateMealView.as_view(), name='create_meal'),
     path('mago/', views.MagoDiaryView.as_view(), name='mago'),
+    path('success/', views.SuccessView.as_view(), name='success'),
 
     path('signup/', views.SignupView.as_view(), name='signup'),
     path('login/', views.LoginFormView.as_view(redirect_authenticated_user=True), name='login'),

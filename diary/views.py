@@ -70,7 +70,7 @@ class CreateMealView(LoginRequiredMixin, CreateView):
     model = Meal
     template_name = 'diary/create_meal.html'
     fields = ['date', 'meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
-              'fresh_vegetable', 'fermented_food', 'supplement', 'memo']
+              'fresh_vegetable', 'fermented_food', 'supplement', 'memo', 'photo']
     success_url = reverse_lazy('diary:list')
 
     def form_valid(self, form):
@@ -87,6 +87,10 @@ class SignupView(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect('diary:top')
+
+
+class SuccessView(TemplateView):
+    template_name = 'diary/success.html'
 
 
 class LoginFormView(LoginView):

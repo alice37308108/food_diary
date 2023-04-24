@@ -1,0 +1,18 @@
+{% extends "diary/base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div style="text-align:center;">
+        <p3>登録できました</p3>
+        <p>
+            <img src="{% static "/diary/images/success.png" %}" alt="index" style="padding: 20px;">
+        </p>
+
+        <p>
+            <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'diary:list' %}">
+                <i class="fa-regular fa-pen-to-square"></i> 一覧
+            </button>
+        </p>
+    </div>
+{% endblock %}
