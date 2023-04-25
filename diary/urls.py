@@ -3,8 +3,6 @@ from . import views
 
 app_name = 'diary'
 urlpatterns = [
-    # path('', TemplateView.as_view(template_name='index.html'), name='index'),
-
     path('', views.IndexView.as_view(), name='redirect'),
 
     path('index/', views.IndexView.as_view(), name='index'),
