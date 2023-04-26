@@ -3,11 +3,12 @@ from datetime import datetime, date
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render, redirect
+from django.http import Http404
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView, CreateView, DetailView
+from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
-from diary.forms import SignupForm, LoginForm
+from diary.forms import SignupForm, LoginForm, DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal
 
 
@@ -52,9 +53,9 @@ class ItemDetailView(LoginRequiredMixin, DetailView):
 
 
 class CreateDiaryView(LoginRequiredMixin, CreateView):
-    model = Diary
     template_name = 'diary/create_diary.html'
-    fields = ['date', 'hours_of_sleep', 'sleep_quality', 'weight', 'memo']
+    form_class = DiaryModelForm
+    success_url = reverse_lazy('diary:list')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -66,12 +67,47 @@ class CreateDiaryView(LoginRequiredMixin, CreateView):
         return initial
 
 
-class CreateMealView(LoginRequiredMixin, CreateView):
-    model = Meal
-    template_name = 'diary/create_meal.html'
-    fields = ['date', 'meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
-              'fresh_vegetable', 'fermented_food', 'supplement', 'memo', 'photo']
+class UpdateDiaryView(LoginRequiredMixin, UpdateView):
+    template_name = 'diary/create_diary.html'
+    model = Diary
+    form_class = DiaryModelForm
     success_url = reverse_lazy('diary:list')
+
+    def get_queryset(self):
+        return Diary.objects.all()
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CreateMealView(LoginRequiredMixin, CreateView):
+    template_name = 'diary/create_meal.html'
+    form_class = MealModelForm
+    success_url = reverse_lazy('diary:list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class UpdateMealView(LoginRequiredMixin, UpdateView):
+    template_name = 'diary/create_meal.html'
+    model = Meal
+    form_class = MealModelForm
+    success_url = reverse_lazy('diary:list')
+
+    def get_queryset(self):
+        return Meal.objects.all()
+
+    def get_object(self, queryset=None):
+        try:
+            obj = super().get_object(queryset=queryset)
+        except Http404:
+            raise Http404("データがありません")
+        if obj.user != self.request.user:
+            raise Http404("データがありません")
+        return obj
 
     def form_valid(self, form):
         form.instance.user = self.request.user

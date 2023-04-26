@@ -56,5 +56,18 @@
         <p>この日はまだ食事を追加していません。</p>
     {% endfor %}
 
+    <div class="button-container">
+        <span class="button-span">
+            <a class="button" href="{% url 'diary:update_diary' pk=diary.pk %}">日記編集</a>
+        </span>
+        <span class="button-span">
+            <a class="button" href="{% url 'diary:update_meal' pk=diary.pk %}">食事編集</a>
+        </span>
+        <span class="button-span">
+            <a class="button" href="{% url 'diary:list' %}">一覧へ戻る</a>
+        </span>
+
+    </div>
+
 {% endblock %}
 
