@@ -49,31 +49,35 @@
                             </tr>
                         </table>
 
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                            additional
-                            content. This content is a little bit longer.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <li>サプリ:
+                            {% for supplement in meal.supplement.all %}{{ supplement.name }}{% if not forloop.last %},
+                            {% endif %}{% endfor %}</li>
+                        <li>メモ: {{ meal.memo }}</li>
                     </div> <!-- card-body -->
-
                 </div> <!-- card -->
             </div> <!-- col-6 -->
         {% empty %}
             <p>この日はまだ食事を追加していません。</p>
 
         {% endfor %}
-    </div>
+    </div> <!-- row -->
     <div class="button-container">
-        <span class="button-span">
-            <a class="button" href="{% url 'diary:update_diary' pk=diary.pk %}">日記編集</a>
-        </span>
-        <span class="button-span">
-            <a class="button" href="{% url 'diary:update_meal' pk=diary.pk %}">食事編集</a>
-        </span>
-        <span class="button-span">
-            <a class="button" href="{% url 'diary:list' %}">一覧へ戻る</a>
-        </span>
-
+        <button type="button" class="btn btn-outline-primary"
+                onclick="location.href={% url 'diary:update_diary' pk=diary.pk %}">
+            日記編集
+        </button>
+        <button type="button" class="btn btn-outline-primary"
+                onclick="location.href={% url 'diary:update_meal' pk=diary.pk %}">
+            食事編集
+        </button>
+        <button type="button" class="btn btn-outline-primary"
+                onclick="location.href={% url 'diary:create_meal' %}">
+            食事追加
+        </button>
+        <button type="button" class="btn btn-outline-primary" onclick="location.href={% url 'diary:list' %}">
+            一覧
+        </button>
     </div> <!-- button-container -->
-    </div>
+{#    </div>#}
 
 {% endblock %}
