@@ -6,11 +6,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h2>🍚食日記登録🍚</h2>
+                <div class="h4">🍚食日記登録🍚</div>
                 <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
                         {% bootstrap_form form%}
                     <p>
-                        <button type="submit" class="btn btn-primary">作成</button>
+                        <button type="submit" class="btn btn-warning">作成</button>
                     </p>
                 </form>
             </div>

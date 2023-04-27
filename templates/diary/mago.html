@@ -3,7 +3,7 @@
 
 {% block content %}
     <section>
-        <h3>まごはやさしい🫘🥦</h3>
+        <div class="h5">まごはやさしい🫘🥦</div>
         <div class="center">
             <div>
                 <img src="{% static "/diary/images/mago1.png" %}" id="bigimg">
@@ -40,7 +40,7 @@
     </script>
 
     <p>
-        <button type="button" class="btn btn--orange btn--radius" onclick="location.href={% url 'diary:index' %}">
+        <button type="button" class="btn btn-outline-primary" onclick="location.href={% url 'diary:index' %}">
             <i class="fa-solid fa-house"></i> Topへ戻る
         </button>
     </p>
