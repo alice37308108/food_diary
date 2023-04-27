@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block content %}
-    <p id="index-p">
+    <div class="text-center">
+    <p id="index-p" class="mx-auto">
         {% if user.is_authenticated %}
             {{ now }}<br>
             {{ message }} {{ user.username }}さん
@@ -19,11 +20,12 @@
 
     {% if user.is_authenticated %}
         <p>
-            <button type="button" class="btn btn--orange btn--radius"
+{#            <button type="button" class="btn btn-outline-primary">Primary</button>#}
+            <button type="button" class="btn btn-outline-primary"
                     onclick="location.href={% url 'diary:create_diary' %}">
                 <i class="fa-solid fa-check"></i> 日記登録
             </button>
-            <button type="button" class="btn btn--orange btn--radius"
+            <button type="button" class="btn btn-outline-primary"
                     onclick="location.href={% url 'diary:create_meal' %}">
                 <i class="fa-solid fa-fish"></i> 食事登録
             </button>
@@ -33,5 +35,5 @@
             </button>
         </p>
     {% endif %}
-
+</div>
 {% endblock %}

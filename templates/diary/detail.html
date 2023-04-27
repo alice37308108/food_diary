@@ -3,59 +3,65 @@
 
 {% block content %}
     <!-- Diary -->
-    <h3>{{ diary.date }}の日記</h3>
-    <ul>
-        <li>睡眠時間: {{ diary.hours_of_sleep }}</li>
-        <li>睡眠の質: {{ diary.sleep_quality }}</li>
-        <li>体重: {{ diary.weight }}</li>
-        <li>メモ: {{ diary.memo }}</li>
-    </ul>
+    <div class="row">
+        <h3>{{ diary.date }}の日記</h3>
+        <ul class="list-group">
+            <li class="list-group-item">睡眠時間: {{ diary.hours_of_sleep }}</li>
+            <li class="list-group-item">睡眠の質: {{ diary.sleep_quality }}</li>
+            <li class="list-group-item">体重: {{ diary.weight }}</li>
+            <li class="list-group-item">メモ: {{ diary.memo }}</li>
+        </ul>
 
-    <!-- Meal -->
-    {% for meal in diary.meal_set.all %}
-        <h3>{{ meal.get_meal_type_display }}🍚</h3>
+        <!-- Meal -->
+        {% for meal in diary.meal_set.all %}
+            <div class="col-6">
+                <!-- photo -->
+                <div class="card">
+                    {% if meal.photo %}
+                        <img src="{{ meal.photo.url }}" class="card-img-top" alt="{{ meal.meal_type }}">
+                    {% else %}
+                        <p>no image</p>
+                    {% endif %}
+                    <div class=" card-body">
+                        <h5 class="card-title">{{ meal.get_meal_type_display }}</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>まめ</th>
+                                <th>ごま</th>
+                                <th>わかめ</th>
+                                <th>野菜</th>
+                                <th>さかな</th>
+                                <th>きのこ</th>
+                                <th>いも</th>
+                                <th>生野菜</th>
+                                <th>発酵食品</th>
+                            </tr>
+                            <tr>
+                                <td>{{ meal.get_bean }}</td>
+                                <td>{{ meal.get_sesame }}</td>
+                                <td>{{ meal.get_seaweed }}</td>
+                                <td>{{ meal.get_vegetable }}</td>
+                                <td>{{ meal.get_fish }}</td>
+                                <td>{{ meal.get_mushroom }}</td>
+                                <td>{{ meal.get_potato }}</td>
+                                <td>{{ meal.get_fresh_vegetable }}</td>
+                                <td>{{ meal.get_fermented_food }}</td>
+                            </tr>
+                        </table>
 
-        <!-- photo -->
-        {% if meal.photo %}
-            <img style="max-width: 300px; max-height: 300px;" src="{{ meal.photo.url }}" alt="{{ meal.meal_type }}">
-        {% else %}
-            <td class="td_image">No image</td>
-        {% endif %}
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                            additional
+                            content. This content is a little bit longer.</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div> <!-- card-body -->
 
-        <table border="1">
-            <tr>
-                <th>まめ</th>
-                <th>ごま</th>
-                <th>わかめ</th>
-                <th>野菜</th>
-                <th>さかな</th>
-                <th>きのこ</th>
-                <th>いも</th>
-                <th>生野菜</th>
-                <th>発酵食品</th>
-            </tr>
-            <tr>
-                <td>{{ meal.get_bean }}</td>
-                <td>{{ meal.get_sesame }}</td>
-                <td>{{ meal.get_seaweed }}</td>
-                <td>{{ meal.get_vegetable }}</td>
-                <td>{{ meal.get_fish }}</td>
-                <td>{{ meal.get_mushroom }}</td>
-                <td>{{ meal.get_potato }}</td>
-                <td>{{ meal.get_fresh_vegetable }}</td>
-                <td>{{ meal.get_fermented_food }}</td>
-            </tr>
-        </table>
+                </div> <!-- card -->
+            </div> <!-- col-6 -->
+        {% empty %}
+            <p>この日はまだ食事を追加していません。</p>
 
-        <li>サプリ: {% for supplement in meal.supplement.all %}{{ supplement.name }}{% if not forloop.last %},
-        {% endif %}{% endfor %}</li>
-        <li>メモ: {{ meal.memo }}</li>
-
-        {#        </ul>#}
-    {% empty %}
-        <p>この日はまだ食事を追加していません。</p>
-    {% endfor %}
-
+        {% endfor %}
+    </div>
     <div class="button-container">
         <span class="button-span">
             <a class="button" href="{% url 'diary:update_diary' pk=diary.pk %}">日記編集</a>
@@ -67,7 +73,7 @@
             <a class="button" href="{% url 'diary:list' %}">一覧へ戻る</a>
         </span>
 
+    </div> <!-- button-container -->
     </div>
 
 {% endblock %}
-
