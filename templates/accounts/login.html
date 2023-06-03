@@ -1,4 +1,4 @@
-{% extends "diary/base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block content %}
@@ -6,7 +6,7 @@
 {#<html lang="ja">#}
 <body>
     <h2>ログイン</h2>
-    <form action="{% url 'diary:login' %}" method="post">
+    <form action="{% url 'accounts:login' %}" method="post">
     {% csrf_token %}
         {{ form.as_p }}
         <p><input type="hidden" name="next" value="{{next}}"></p>

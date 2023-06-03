@@ -99,10 +99,10 @@
     <nav>
         <ul class="nav-links">
             {% if user.is_authenticated %}
-                <li><a href="{% url 'diary:logout' %}">ログアウト</a></li>
+                <li><a href="{% url 'accounts:logout' %}">ログアウト</a></li>
             {% else %}
-                <li><a href="{% url 'diary:login' %}">ログイン</a></li>
-                <li><a href="{% url 'diary:signup' %}">新規登録</a></li>
+                <li><a href="{% url 'accounts:login' %}">ログイン</a></li>
+{#                <li><a href="{% url 'accounts:signup' %}">新規登録</a></li>#}
             {% endif %}
         </ul>
     </nav>

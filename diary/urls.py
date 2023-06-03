@@ -15,8 +15,5 @@ urlpatterns = [
     path('mago/', views.MagoDiaryView.as_view(), name='mago'),
     path('success/', views.SuccessView.as_view(), name='success'),
 
-    path('signup/', views.SignupView.as_view(), name='signup'),
-    path('login/', views.LoginFormView.as_view(redirect_authenticated_user=True), name='login'),
-    path('logout/', views.LogoutFormView.as_view(), name='logout'),
 
 ]

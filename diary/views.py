@@ -1,14 +1,13 @@
 from datetime import datetime, date
 
-from django.contrib.auth import login
+
+
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView
 from django.http import Http404
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
-from diary.forms import SignupForm, LoginForm, DiaryModelForm, MealModelForm
+from diary.forms import DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal
 
 
@@ -114,32 +113,5 @@ class UpdateMealView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class SignupView(CreateView):
-    form_class = SignupForm
-    template_name = 'diary/signup.html'
-    success_url = 'diary/index.html'
-
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('diary:top')
-
-
 class SuccessView(TemplateView):
     template_name = 'diary/success.html'
-
-
-class LoginFormView(LoginView):
-    form_class = LoginForm
-    template_name = 'diary/login.html'
-
-    def form_valid(self, form):
-        login(self.request, form.get_user())
-        next_url = self.request.GET.get('next')
-        if next_url:
-            return redirect(next_url)
-        return super().form_valid(form)
-
-
-class LogoutFormView(LogoutView):
-    template_name = 'diary/index.html'

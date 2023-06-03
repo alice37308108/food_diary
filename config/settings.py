@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'diary.apps.DiaryConfig',
+    'accounts.apps.AccountsConfig',
     'django_bootstrap5',
 ]
 
@@ -128,5 +129,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/login'
+LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = '/'
