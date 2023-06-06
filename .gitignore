@@ -162,3 +162,5 @@ cython_debug/
 #media files
 media/
 media_test_dir/
+
+config/settings.py
