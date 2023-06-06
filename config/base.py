@@ -115,9 +115,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     'allauth.account.auth_backends.AuthenticationBackend',
 # ]
 
+# ログイン後のリダイレクト先URL
 LOGIN_REDIRECT_URL = '/'
+
+# ログアウト後のリダイレクト先URL
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
+# アカウントアダプターの設定
 ACCOUNT_ADAPTER = 'accounts.adapter.NoNewUsersAccountAdapter'
 
+# サイトIDの設定
 SITE_ID = 1
