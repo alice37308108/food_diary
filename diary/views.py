@@ -25,7 +25,7 @@ class IndexView(TemplateView):
         return context
 
 
-class ListDiaryView(ListView):
+class ListDiaryView(LoginRequiredMixin, ListView):
     model = Diary
     template_name = 'diary/list.html'
     paginate_by = 5
