@@ -35,11 +35,11 @@ class LogoutFormView(LogoutView):
     template_name = 'diary/index.html'
 
 
-class UserUpdateView(UpdateView):
-    model = User
-    template_name = 'accounts/update.html'
-    form_class = UserUpdateForm
-    success_url = reverse_lazy('diary:index')
-
-    def get_object(self, queryset=None):
-        return self.request.user
+# class UserUpdateView(UpdateView):
+#     model = User
+#     template_name = 'accounts/update.html'
+#     form_class = UserUpdateForm
+#     success_url = reverse_lazy('diary:index')
+#
+#     def get_object(self, queryset=None):
+#         return self.request.user
