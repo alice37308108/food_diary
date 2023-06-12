@@ -10,7 +10,8 @@
             {% endif %}
         </p>
 
-        <img src="{% static "/diary/images/index.png" %}" alt="index" width="500" height="470" style="padding: 20px;">
+        <img src="{% static "/diary/images/index.png" %}" alt="index" class="img-fluid" style="padding: 20px;
+             max-width: 60%; height: auto;">
 
         <p>
             <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:mago' %}">

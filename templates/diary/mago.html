@@ -3,29 +3,39 @@
 
 {% block content %}
     <section>
-        <div class="h5">まごはやさしい🫘🥦</div>
-        <div class="center">
+        <h5 class="text-center">まごはやさしい🫘🥦</h5>
+        <div class="text-center">
             <div>
-                <img src="{% static "/diary/images/mago1.png" %}" id="bigimg">
+                <img src="{% static "/diary/images/mago1.png" %}" id="bigimg" >
             </div>
-            <ul id="mago-ul">
-                <li><img src="{% static "/diary/images/mago1.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago1.png"></li>
-                <li><img src="{% static "/diary/images/mago2.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago2.png"></li>
-                <li><img src="{% static "/diary/images/mago3.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago3.png"></li>
-                <li><img src="{% static "/diary/images/mago4.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago4.png"></li>
-                <li><img src="{% static "/diary/images/mago5.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago5.png"></li>
-                <li><img src="{% static "/diary/images/mago6.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago6.png"></li>
-                <li><img src="{% static "/diary/images/mago7.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago7.png"></li>
-                <li><img src="{% static "/diary/images/mago8.png" %}" class="thumb"
-                         data-img="/static/diary/images/mago8.png"></li>
-            </ul>
+        </div>
+        <div class="text-center">
+            <div class="row">
+                <div class="col">
+                    <img src="{% static "/diary/images/mago1.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago1.png" %}">
+                    <img src="{% static "/diary/images/mago2.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago2.png" %}">
+                </div>
+                <div class="col">
+                    <img src="{% static "/diary/images/mago3.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago3.png" %}">
+                    <img src="{% static "/diary/images/mago4.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago4.png" %}">
+                </div>
+                <div class="col">
+                    <img src="{% static "/diary/images/mago5.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago5.png" %}">
+                    <img src="{% static "/diary/images/mago6.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago6.png" %}">
+                </div>
+                <div class="col">
+                    <img src="{% static "/diary/images/mago7.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago7.png" %}">
+                    <img src="{% static "/diary/images/mago8.png" %}" class="thumb"
+                         data-img="{% static "/diary/images/mago8.png" %}">
+                </div>
+            </div>
         </div>
     </section>
 
@@ -40,9 +50,8 @@
     </script>
 
     <p>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href={% url 'diary:index' %}">
+        <button type="button" class="btn btn-outline-primary" onclick="location.href='{% url 'diary:index' %}'">
             <i class="fa-solid fa-house"></i> Topへ戻る
         </button>
     </p>
-
 {% endblock %}
