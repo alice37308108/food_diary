@@ -6,14 +6,10 @@ from django.utils import timezone
 from diary.models import Diary, Meal
 
 
-
-
-
-
 class DiaryModelForm(forms.ModelForm):
     class Meta:
         model = Diary
-        fields = ['date', 'hours_of_sleep', 'sleep_quality', 'weight', 'memo']
+        fields = ['date', 'morning_walking', 'hours_of_sleep', 'sleep_quality', 'weight', 'memo']
 
 
 class MealModelForm(forms.ModelForm):

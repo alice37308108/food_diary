@@ -6,6 +6,7 @@
     <div class="row">
         <h3>{{ diary.date }}の日記</h3>
         <ul class="list-group">
+            <li class="list-group-item">あさんぽ: {{ diary.get_morning_walking }}</li>
             <li class="list-group-item">睡眠時間: {{ diary.hours_of_sleep }}</li>
             <li class="list-group-item">睡眠の質: {{ diary.sleep_quality }}</li>
             <li class="list-group-item">体重: {{ diary.weight }}</li>
@@ -24,29 +25,50 @@
                     {% endif %}
                     <div class=" card-body">
                         <h5 class="card-title">{{ meal.get_meal_type_display }}</h5>
+
+
                         <table class="table table-bordered">
-                            <tr>
-                                <th>まめ</th>
-                                <th>ごま</th>
-                                <th>わかめ</th>
-                                <th>野菜</th>
-                                <th>さかな</th>
-                                <th>きのこ</th>
-                                <th>いも</th>
-                                <th>生野菜</th>
-                                <th>発酵食品</th>
-                            </tr>
+                            {#                            <tr>#}
+                            {#                                <th>まめ</th>#}
+                            {#                                <th>ごま</th>#}
+                            {#                                <th>わかめ</th>#}
+                            {#                                <th>野菜</th>#}
+                            {#                                <th>さかな</th>#}
+                            {#                                <th>きのこ</th>#}
+                            {#                                <th>いも</th>#}
+                            {#                                <th>生野菜</th>#}
+                            {#                                <th>発酵食品</th>#}
+                            {#                            </tr>#}
+{#                            <tr>#}
+{#                                <td>{{ meal.get_bean }}</td>#}
+{#                                <td>{{ meal.get_sesame }}</td>#}
+{#                                <td>{{ meal.get_seaweed }}</td>#}
+{#                                <td>{{ meal.get_vegetable }}</td>#}
+{#                                <td>{{ meal.get_fish }}</td>#}
+{#                                <td>{{ meal.get_mushroom }}</td>#}
+{#                                <td>{{ meal.get_potato }}</td>#}
+{#                                <td>{{ meal.get_fresh_vegetable }}</td>#}
+{#                                <td>{{ meal.get_fermented_food }}</td>#}
+{#                            </tr>#}
                             <tr>
                                 <td>{{ meal.get_bean }}</td>
                                 <td>{{ meal.get_sesame }}</td>
                                 <td>{{ meal.get_seaweed }}</td>
                                 <td>{{ meal.get_vegetable }}</td>
+                            </tr>
+                            <tr>
                                 <td>{{ meal.get_fish }}</td>
                                 <td>{{ meal.get_mushroom }}</td>
                                 <td>{{ meal.get_potato }}</td>
                                 <td>{{ meal.get_fresh_vegetable }}</td>
-                                <td>{{ meal.get_fermented_food }}</td>
                             </tr>
+                            <tr>
+                                <td>{{ meal.get_fermented_food }}</td>
+                                <td></td> <!-- 空のセルを追加して調整 -->
+                                <td></td>
+                                <td></td>
+                            </tr>
+
                         </table>
 
                         <li>サプリ:
@@ -78,6 +100,6 @@
             一覧
         </button>
     </div> <!-- button-container -->
-{#    </div>#}
+    {#    </div>#}
 
 {% endblock %}

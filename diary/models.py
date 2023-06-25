@@ -7,7 +7,16 @@ from django.urls import reverse
 
 
 class Diary(models.Model):
+    MORNING_WALKING_CHOICES = (
+        (10, '10分'),
+        (20, '20分'),
+        (30, '30分'),
+        (40, '40分'),
+        (50, '50分'),
+        (60, '60分'),
+    )
     date = models.DateField(verbose_name='日付', unique=True)
+    morning_walking = models.IntegerField(verbose_name='あさんぽ', choices=MORNING_WALKING_CHOICES, blank=True, null=True)
     hours_of_sleep = models.IntegerField(verbose_name='睡眠時間',
                                          validators=[MinValueValidator(1), MaxValueValidator(24)])
     sleep_quality = models.IntegerField(verbose_name='睡眠の質', validators=[MinValueValidator(1), MaxValueValidator(5)])
@@ -19,6 +28,14 @@ class Diary(models.Model):
 
     def get_absolute_url(self):
         return reverse('diary:detail', args=[str(self.pk)])
+
+    def get_morning_walking(self):
+        if self.morning_walking:
+            walking_time = self.morning_walking // 10
+            return '🦖' * walking_time
+        else:
+            return ''
+
 
 
 class Meal(models.Model):
