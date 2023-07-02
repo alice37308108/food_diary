@@ -117,7 +117,7 @@ class SuccessView(TemplateView):
     template_name = 'diary/success.html'
 
 
-class PancettaScheduleEventsView(TemplateView):
+class PancettaScheduleEventsView(LoginRequiredMixin, TemplateView):
     template_name = 'diary/pancetta.html'
 
     def get_context_data(self, **kwargs):
