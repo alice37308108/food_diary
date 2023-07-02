@@ -2,11 +2,13 @@ from datetime import datetime, date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
 from diary.forms import DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal
+from .utils import add_days, register_event
 
 
 class IndexView(TemplateView):
@@ -113,3 +115,30 @@ class UpdateMealView(LoginRequiredMixin, UpdateView):
 
 class SuccessView(TemplateView):
     template_name = 'diary/success.html'
+
+
+class PancettaScheduleEventsView(TemplateView):
+    template_name = 'diary/pancetta.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.schedule_events()
+        return redirect('diary:index')
+
+    def schedule_events(self):
+        date = '2023-07-01'
+        date = datetime.strptime(date, '%Y-%m-%d')
+
+        # for days in [3, 7, 14, 21]:
+        for days in [1]:
+            new_date = add_days(date, days)
+            print(f"{days}日後の日付: {new_date.strftime('%Y-%m-%d')}")
+
+            event_id = register_event(new_date)
+            if event_id is not None:
+                print(f"{days}日後:{new_date.strftime('%Y-%m-%d')}の予定が登録されました。")
+            else:
+                print(f"{days}日後の予定の登録に失敗しました。")

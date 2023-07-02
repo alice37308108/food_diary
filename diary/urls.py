@@ -14,6 +14,7 @@ urlpatterns = [
     path('update_meal/<int:pk>/', views.UpdateMealView.as_view(), name='update_meal'),
     path('mago/', views.MagoDiaryView.as_view(), name='mago'),
     path('success/', views.SuccessView.as_view(), name='success'),
+    path('pancetta/', views.PancettaScheduleEventsView.as_view(), name='pancetta'),
 
 
 ]

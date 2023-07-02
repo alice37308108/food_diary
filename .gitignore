@@ -164,3 +164,5 @@ media/
 media_test_dir/
 
 config/settings.py
+
+credentials.json

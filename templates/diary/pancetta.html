@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <form method="POST" action="{% url 'diary:pancetta' %}">
+        {% csrf_token %}
+        <button type="submit">スケジュールイベントを登録する</button>
+    </form>
+{% endblock %}
