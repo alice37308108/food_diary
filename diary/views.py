@@ -1,14 +1,14 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
 from diary.forms import DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal
-from .utils import add_days, register_event
+from .utils import register_event
 
 
 class IndexView(TemplateView):
@@ -118,6 +118,7 @@ class SuccessView(TemplateView):
 
 
 class PancettaScheduleEventsView(LoginRequiredMixin, TemplateView):
+    """カレンダーイベントのスケジュールを作成して表示する"""
     template_name = 'diary/pancetta.html'
 
     def get_context_data(self, **kwargs):
@@ -125,20 +126,35 @@ class PancettaScheduleEventsView(LoginRequiredMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.schedule_events()
-        return redirect('diary:index')
+        """POSTメソッドが呼び出された際の処理を行う"""
+        date = request.POST.get('date')
+        context = self.schedule_events(date)  # 予定のスケジュールを生成する
+        return render(request, self.template_name, context)  # 生成したスケジュールをテンプレートに渡してレンダリング
 
-    def schedule_events(self):
-        date = '2023-07-01'
-        date = datetime.strptime(date, '%Y-%m-%d')
+    def schedule_events(self, date):
+        """指定された日付をもとにイベントのスケジュールを生成する"""
+        date = datetime.strptime(date, '%Y-%m-%d')  # 入力された日付をdatetimeオブジェクトに変換
 
-        # for days in [3, 7, 14, 21]:
-        for days in [1]:
-            new_date = add_days(date, days)
-            print(f"{days}日後の日付: {new_date.strftime('%Y-%m-%d')}")
+        context = {
+            'days': [1, 2],  # スケジュールを生成する日数のリスト
+            'events': [],  # 生成されたイベントのリスト
+        }
 
-            event_id = register_event(new_date)
+        for days in context['days']:
+            new_date = date + timedelta(days=days)  # 指定された日数だけ日付を進める
+            event_id = register_event(new_date)  # 新しい日付のイベントを登録
             if event_id is not None:
-                print(f"{days}日後:{new_date.strftime('%Y-%m-%d')}の予定が登録されました。")
+                event = {
+                    'days': days,
+                    'event_date': new_date.strftime('%Y-%m-%d'),  # 日付を指定の形式で文字列に変換
+                    'event_registered': True,  # イベントが登録されたフラグ
+                }
             else:
-                print(f"{days}日後の予定の登録に失敗しました。")
+                event = {
+                    'days': days,
+                    'event_date': new_date.strftime('%Y-%m-%d'),
+                    'event_registered': False,  # イベントが登録されなかったフラグ
+                }
+            context['events'].append(event)  # 生成されたイベントをリストに追加
+
+        return context  # 生成されたスケジュールのコンテキストを返す

@@ -2,8 +2,26 @@
 {% load static %}
 
 {% block content %}
-    <form method="POST" action="{% url 'diary:pancetta' %}">
-        {% csrf_token %}
-        <button type="submit">スケジュールイベントを登録する</button>
-    </form>
+    <div style="text-align: center;">
+        <h5 style="text-align: left;">パンツェッタ登録</h5>
+
+        <form method="POST" action="{% url 'diary:pancetta' %}">
+            {% csrf_token %}
+            作成日：<input type="date" name="date" required>
+            <button type="submit" class="btn btn-outline-warning">カレンダー登録</button>
+        </form>
+
+        {% for event in events %}
+            {{ event.days }}日後: {{ event.event_date }}
+            {% if event.event_registered %}
+                予定が登録されました。
+            {% else %}
+                予定の登録に失敗しました。
+            {% endif %}
+            <br> <!-- 改行を追加 -->
+        {% endfor %}
+
+        <img src="{% static "/diary/images/pig.png" %}" alt="pig" class="img-fluid" style="padding: 20px;
+             max-width:40%; height: auto;">
+    </div>
 {% endblock %}

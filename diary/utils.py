@@ -6,6 +6,7 @@ import os
 
 load_dotenv()
 
+
 def add_days(date, days):
     """
     日付に指定された日数を加算する関数です。
@@ -14,6 +15,7 @@ def add_days(date, days):
     :return: 加算後の日付
     """
     return date + timedelta(days=days)
+
 
 def register_event(event_date):
     """
