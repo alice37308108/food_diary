@@ -1,10 +1,9 @@
 from datetime import timedelta
+
 import google.auth
 import googleapiclient.discovery
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+from config.base import CALENDAR_ID
 
 
 def add_days(date, days):
@@ -43,6 +42,6 @@ def register_event(event_date):
         }
     }
 
-    created_event = service.events().insert(calendarId=os.getenv('calendar_id'), body=event).execute()
+    created_event = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
     event_id = created_event.get('id')
     return event_id

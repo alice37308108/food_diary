@@ -12,6 +12,7 @@ env = environ.Env()  # environ.Envクラスのインスタンスを作成
 env.read_env(Path(BASE_DIR, '.env'))  # .envファイルのパスを作成して環境変数を読み込む
 
 SECRET_KEY = env('SECRET_KEY')  # SECRET_KEYを.envファイルから取得する
+CALENDAR_ID = env('CALENDAR_ID')  # CALENDAR_IDを.envファイルから取得する
 
 INSTALLED_APPS = [
     'django.contrib.admin',
