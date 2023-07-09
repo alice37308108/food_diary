@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div style="text-align: center;">
+        {% if comment %}
+            <br>
+            <p>{{ comment }}</p>
+            <img src="{% static "/diary/images/okay.png" %}" alt="okay" class="img-fluid" style="padding: 20px; max-width: 60%; height: auto;">
+            <p>
+                <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:input_comment' %}'">またつぶやく</button>
+                <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:index' %}'">Topへ戻る</button>
+            </p>
+        {% else %}
+            <br>
+            <form method="POST" action="{% url 'diary:input_comment' %}">
+                {% csrf_token %}
+                今の気持ち、やりたいこと、やりたくないことをどうぞ✨<br><br>
+                <textarea name="comment" rows="4" cols="50">{{ comment }}</textarea><br>
+                <button type="submit" class="btn btn-outline-warning">つぶやく</button>
+                <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:index' %}'">Topへ戻る</button>
+            </form>
+            <img src="{% static "/diary/images/input_comment.png" %}" alt="okay" class="img-fluid" style="padding: 20px; max-width: 40%; height: auto;">
+        {% endif %}
+    </div>
+{% endblock %}

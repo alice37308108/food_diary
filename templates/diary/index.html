@@ -34,6 +34,11 @@
                 <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:list' %}">
                     <i class="fa-regular fa-pen-to-square"></i> 一覧
                 </button>
+
+                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:input_comment' %}">
+                    <i class="fa-regular fa-pen-to-square"></i> つぶやく
+                </button>
+
             </p>
         {% endif %}
     </div>

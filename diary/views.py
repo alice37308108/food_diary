@@ -2,7 +2,7 @@ from datetime import datetime, date, timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
@@ -158,3 +158,17 @@ class PancettaScheduleEventsView(LoginRequiredMixin, TemplateView):
             context['events'].append(event)  # 生成されたイベントをリストに追加
 
         return context  # 生成されたスケジュールのコンテキストを返す
+
+
+class InputCommentView(LoginRequiredMixin, TemplateView):
+    template_name = 'diary/input_comment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        comment = request.POST.get('comment')
+        context = {'comment': comment}
+        return render(request, self.template_name, context)
+
