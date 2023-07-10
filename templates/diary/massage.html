@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div style="text-align: center;">
+        <h5 style="text-align: left;">Massage💞</h5>
+        <div>
+            <h5 id="message"></h5>
+            <br>
+            <img src="{% static "/diary/images/input_comment.png" %}" alt="okay" class="img-fluid" style="padding: 20px; max-width: 40%; height: auto;">
+            <br>
+            <button type="submit" class="btn btn-outline-warning" onclick="drawMassage()">メッセージを見る</button>
+        </div>
+    </div>
+
+    <script>
+        function drawMassage() {
+            const massageList = ['すごい！', 'いいね👍', 'やるじゃん😀', '最高🤗', '素敵✨', 'ありがとう🎂', 'さすが！', 'たすかる～🙏', '嬉しい💖', 'がんばったね🦖', 'えらい!!'];
+            const randomIndex = Math.floor(Math.random() * massageList.length);
+            const massageResult = massageList[randomIndex];
+            document.getElementById("message").textContent = massageResult;
+        }
+    </script>
+
+    <style>
+        div {
+            text-align: center;
+        }
+
+        #message {
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}

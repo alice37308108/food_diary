@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
@@ -172,3 +173,6 @@ class InputCommentView(LoginRequiredMixin, TemplateView):
         context = {'comment': comment}
         return render(request, self.template_name, context)
 
+
+class MassageView(TemplateView):
+    template_name = 'diary/massage.html'
