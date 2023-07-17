@@ -175,4 +175,4 @@ class InputCommentView(LoginRequiredMixin, TemplateView):
 
 
 class MassageView(TemplateView):
-    template_name = 'diary/massage.html'
+    template_name = 'diary/message.html'

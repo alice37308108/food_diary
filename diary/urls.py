@@ -16,5 +16,5 @@ urlpatterns = [
     path('success/', views.SuccessView.as_view(), name='success'),
     path('pancetta/', views.PancettaScheduleEventsView.as_view(), name='pancetta'),
     path('input_comment/', views.InputCommentView.as_view(), name='input_comment'),
-    path('massage/', views.MassageView.as_view(), name='massage'),
+    path('message/', views.MassageView.as_view(), name='message'),
 ]
