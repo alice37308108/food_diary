@@ -42,9 +42,9 @@
             // もう１回ボタンをクリックした時にすべての答えを非表示にする関数
             function hideAllDescriptions() {
                 const descriptionElements = document.querySelectorAll('[id^="description-"]');
-                for (let i = 0; i < descriptionElements.length; i++) {
-                    descriptionElements[i].style.display = 'none';
-                }
+                descriptionElements.forEach(element => {
+                    element.style.display = 'none';
+                });
             }
         </script>
     </div>
