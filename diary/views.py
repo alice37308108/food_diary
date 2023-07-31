@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
 from diary.forms import DiaryModelForm, MealModelForm
-from diary.models import Diary, Meal
+from diary.models import Diary, Meal, RegularExpressionWord
 from .utils import register_event
 
 
@@ -176,3 +176,13 @@ class InputCommentView(LoginRequiredMixin, TemplateView):
 
 class MassageView(TemplateView):
     template_name = 'diary/message.html'
+
+
+class RegularExpressionView(TemplateView):
+    template_name = 'diary/regular_expression.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        words = RegularExpressionWord.objects.all()
+        context['words'] = words
+        return context

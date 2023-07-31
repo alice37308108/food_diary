@@ -98,3 +98,11 @@ class Supplement(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RegularExpressionWord(models.Model):
+    word = models.CharField(max_length=100, verbose_name='言葉')
+    description = models.TextField(verbose_name='説明')
+
+    def __str__(self):
+        return self.word

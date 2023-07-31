@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <!-- ページタイトル -->
+    <p3>正規表現</p3>
+
+    <!-- 単語リストの表示 -->
+    <ul class="list-group">
+        {% for word in words %}
+            <li class="list-group-item">
+                <button onclick="showDescription({{ forloop.counter }})" class="btn btn-outline-warning">🍋</button>
+                <span>{{ word.word }}</span>
+            </li>
+            <li class="list-group-item list-group-item-warning">
+                <!-- IDによって各答えを識別 -->
+                <span id="description-{{ forloop.counter }}" style="display: none;">{{ word.description }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- その他の要素 -->
+    <div style="text-align: center;">
+        <p>
+            <img src="{% static "/diary/images/success.png" %}" alt="index" style="padding: 20px;">
+        </p>
+
+        <button onclick="hideAllDescriptions()" class="btn btn-outline-warning">もう１回</button>
+        <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:index' %}'">
+            <i class="fa-solid fa-house"></i> Topへ戻る
+        </button>
+
+        <!-- JavaScriptコード -->
+        <script type="text/javascript">
+            // 答えを表示する関数
+            function showDescription(index) {
+                const descriptionElement = document.getElementById('description-' + index);
+                descriptionElement.style.display = 'inline';
+            }
+
+            // もう１回ボタンをクリックした時にすべての答えを非表示にする関数
+            function hideAllDescriptions() {
+                const descriptionElements = document.querySelectorAll('[id^="description-"]');
+                for (let i = 0; i < descriptionElements.length; i++) {
+                    descriptionElements[i].style.display = 'none';
+                }
+            }
+        </script>
+    </div>
+{% endblock %}
