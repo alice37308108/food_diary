@@ -15,7 +15,7 @@
             </li>
             <li class="list-group-item list-group-item-warning">
                 <!-- IDによって各答えを識別 -->
-                <span id="description-{{ forloop.counter }}" style="display: none;">{{ word.description }}</span>
+                <span id="description-{{ forloop.counter }}" style="display: none;">{{ word.description|linebreaksbr }}</span>
             </li>
         {% endfor %}
     </ul>
