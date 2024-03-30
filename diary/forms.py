@@ -17,3 +17,8 @@ class MealModelForm(forms.ModelForm):
         model = Meal
         fields = ['date', 'meal_type', 'bean', 'sesame', 'seaweed', 'vegetable', 'fish', 'mushroom', 'potato',
                   'fresh_vegetable', 'fermented_food', 'supplement', 'memo', 'photo']
+
+
+class ImageUploadForm(forms.Form):
+    image = forms.ImageField()
+    

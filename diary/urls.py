@@ -18,4 +18,5 @@ urlpatterns = [
     path('input_comment/', views.InputCommentView.as_view(), name='input_comment'),
     path('message/', views.MassageView.as_view(), name='message'),
     path('regular_expression/', views.RegularExpressionView.as_view(), name='regular_expression'),
+    path('biscuit/', views.BiscuitView.as_view(), name='biscuit'),
 ]

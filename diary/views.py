@@ -1,15 +1,25 @@
+import logging
+import json
 from datetime import datetime, date, timedelta
-import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
 from diary.forms import DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal, RegularExpressionWord
+from .forms import ImageUploadForm
+from .predict import model, predict
 from .utils import register_event
+from django.http import JsonResponse
+from django.views import View
+from .predict import predict, model  # predict.py から適切な関数とモデルをインポート
+
+
+logger = logging.getLogger(__name__)
 
 
 class IndexView(TemplateView):
@@ -186,3 +196,43 @@ class RegularExpressionView(TemplateView):
         words = RegularExpressionWord.objects.all()
         context['words'] = words
         return context
+
+
+class BiscuitView(View):
+    form_class = ImageUploadForm
+    template_name = 'diary/biscuit.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    # def post(self, request, *args, **kwargs):
+    #     logger.debug("POST request received")
+    #     form = self.form_class(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         logger.debug("Form is valid")
+    #         image_file = request.FILES['image']
+    #
+    #         # 画像ファイルを処理して推論を行う
+    #         logger.debug("Starting prediction")
+    #         prediction = predict(model, image_file)
+    #         logger.debug(f"Prediction: {prediction}")
+    #
+    #         # 結果を表示する
+    #         return render(request, self.template_name, {'form': form, 'prediction': prediction})
+
+    def post(self, request, *args, **kwargs):
+        # JSONデータを読み込む
+        data = json.loads(request.body)
+        image_data = data.get('image')
+        if image_data:
+            # 画像データを処理して推論を行う
+            prediction = predict(model, image_data)  # ここで適切に画像データを処理する必要がある
+            return JsonResponse({'prediction': prediction})
+        else:
+            return JsonResponse({'error': 'No image data received'}, status=400)
+
+    logger.debug("Form is invalid")
+    # return render(request, self.template_name, {'form': form})
+
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>ビスケット画像アップロード</title>
+</head>
+<body>
+    <h1>ビスケット画像アップロード</h1>
+
+    <div id="camera-container" style="position: relative; width: 320px; height: 240px;">
+        <video id="camera" width="320" height="240" autoplay></video>
+        <canvas id="snapshot" width="320" height="240" style="display: none; position: absolute; top: 0; left: 0;"></canvas>
+    </div>
+    <button id="shoot">撮影</button>
+    <button id="predict" style="display: none;">推論</button>
+
+    <div id="prediction-result"></div>
+
+    <script>
+        const camera = document.getElementById('camera');
+        const canvas = document.getElementById('snapshot');
+        const context = canvas.getContext('2d');
+        const shootButton = document.getElementById('shoot');
+        const predictButton = document.getElementById('predict');
+        const resultContainer = document.getElementById('prediction-result');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                camera.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("カメラの起動に失敗しました:", err);
+            });
+
+        shootButton.addEventListener('click', () => {
+            canvas.style.display = 'block';
+            camera.style.display = 'none';
+            context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+            predictButton.style.display = 'inline';
+        });
+
+        predictButton.addEventListener('click', () => {
+            const imageData = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
+
+            const csrftoken = document.querySelector('[name=csrf-token]').content;
+
+            fetch('/biscuit/', {
+                method: 'POST',
+                body: JSON.stringify({ image: imageData }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultContainer.textContent = '推論結果: ' + data.prediction;
+            })
+            .catch(error => console.error('エラー:', error));
+
+
+//            fetch('/biscuit/', {
+//                method: 'POST',
+//                body: JSON.stringify({ image: imageData }),
+//                headers: { 'Content-Type': 'application/json' }
+//            })
+//            .then(response => response.json())
+//            .then(data => {
+//                resultContainer.textContent = '推論結果: ' + data.prediction;
+//            })
+//            .catch(error => console.error('エラー:', error));
+        });
+    </script>
+</body>
+</html>
