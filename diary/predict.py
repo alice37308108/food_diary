@@ -1,13 +1,12 @@
-import io
+import base64
 import logging
+from io import BytesIO
 
 import torch
 import torch.nn as nn
 from PIL import Image
 from torchvision import transforms
 from torchvision.models import resnet18
-import base64
-from io import BytesIO
 
 logger = logging.getLogger(__name__)
 
@@ -27,26 +26,6 @@ def load_model(model_path):
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()
     return model
-
-
-# def predict(model, image_file):
-#     # `read()` を使用してバイトデータを取得
-#     image_bytes = image_file.read()
-#
-#     # バイトデータから画像を読み込む
-#     image = Image.open(io.BytesIO(image_bytes))
-#     image = image.convert('RGB')
-#
-#     # 画像の前処理を適用
-#     image = transform(image).unsqueeze(0)  # バッチ次元を追加
-#
-#     # 推論を実行
-#     with torch.no_grad():
-#         outputs = model(image)
-#
-#     # 最も確率の高いクラスのインデックスを取得
-#     _, predicted = torch.max(outputs, 1)
-#     return predicted.item()
 
 
 def predict(model, base64_image):
@@ -77,10 +56,18 @@ def predict(model, base64_image):
         _, predicted = torch.max(outputs, 1)
         prediction = predicted.item()
         logger.debug(f"Predicted: {prediction}")
-        return prediction
+
+        # 推論結果に基づいてメッセージを返す
+        if prediction == 0:
+            return "ダークチョコレートです"
+        elif prediction == 1:
+            return "ミルクチョコレートです"
+        else:
+            return "不明な結果です"
     except Exception as e:
         logger.error(f"Error in prediction: {e}")
-        return None
+        return "推論エラーが発生しました"
+
 
 # モデルのパスを指定
 model_path = 'ml_model/model.pth'
