@@ -61,7 +61,7 @@
             retakeButton.style.display = 'none'; // 取り直しボタンを非表示にする
         });
 
-        navigator.mediaDevices.getUserMedia({ video: true })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then(stream => {
                 camera.srcObject = stream;
             })
