@@ -12,9 +12,15 @@
     <style>
         .camera-container {
             position: relative;
-            width: 320px; /* カメラビューの幅を設定 */
-            height: 240px; /* カメラビューの高さを設定 */
-            margin: 10px auto; /* 上下の余白と自動的に左右の余白を設定して中央寄せにする */
+            width: 200px; /* 幅を320pxに設定 */
+            height: 200px; /* 高さも320pxに設定して1:1のアスペクト比にする */
+            margin: 10px auto;
+        }
+
+        #camera, #snapshot {
+            width: 100%; /* コンテナの幅に合わせて調整 */
+            height: 100%; /* コンテナの高さに合わせて調整 */
+            object-fit: cover; /* アスペクト比を維持しつつ、コンテナに合わせて画面を埋める */
         }
 
         .button-margin {
@@ -65,17 +71,16 @@
             .then(stream => {
                 camera.srcObject = stream;
                 camera.onloadedmetadata = () => {
-                    // カメラのアスペクト比に基づいてキャンバスのサイズを調整
-                    const aspectRatio = camera.videoWidth / camera.videoHeight;
-                    canvas.width = camera.clientWidth;
-                    canvas.height = canvas.width / aspectRatio;
+                    // カメラプレビューとキャンバスのサイズを1:1に設定
+                    camera.width = 200;
+                    camera.height = 200;
+                    canvas.width = 200;
+                    canvas.height = 200;
                 };
             })
             .catch(err => {
                 console.error("カメラの起動に失敗しました:", err);
             });
-
-
 
         shootButton.addEventListener('click', () => {
             canvas.style.display = 'block';
