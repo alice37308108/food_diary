@@ -64,10 +64,18 @@
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then(stream => {
                 camera.srcObject = stream;
+                camera.onloadedmetadata = () => {
+                    // カメラのアスペクト比に基づいてキャンバスのサイズを調整
+                    const aspectRatio = camera.videoWidth / camera.videoHeight;
+                    canvas.width = camera.clientWidth;
+                    canvas.height = canvas.width / aspectRatio;
+                };
             })
             .catch(err => {
                 console.error("カメラの起動に失敗しました:", err);
             });
+
+
 
         shootButton.addEventListener('click', () => {
             canvas.style.display = 'block';
