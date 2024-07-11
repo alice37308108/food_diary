@@ -13,7 +13,8 @@ from django.views.generic import ListView, TemplateView, CreateView, DetailView,
 from diary.forms import DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal, RegularExpressionWord
 from .forms import ImageUploadForm
-from .predict import predict, model  # predict.py から適切な関数とモデルをインポート
+#from .predict import predict_chocolate, load_chocolate_model, predict_kinoko, load_kinoko_model # predict.py から適切な関数とモデルをインポート
+from .predict import predict_chocolate, predict_kinoko, predict_kino_take
 from .utils import register_event
 
 logger = logging.getLogger(__name__)
@@ -215,22 +216,46 @@ class RegularExpressionView(TemplateView):
 #             return JsonResponse({'error': 'No image data received'}, status=400)
 
 
+
+
+
 class BiscuitView(TemplateView):
     template_name = 'diary/biscuit.html'
 
-    def get_context_data(self, **kwargs):
-        # このメソッドをオーバーライドして、テンプレートに渡すコンテキストを定義する
-        context = super().get_context_data(**kwargs)
-        context['form'] = ImageUploadForm()  # 例としてformをコンテキストに追加
-        return context
-
     def post(self, request, *args, **kwargs):
-        # JSONデータを読み込む
         data = json.loads(request.body)
         image_data = data.get('image')
         if image_data:
-            # 画像データを処理して推論を行う
-            prediction = predict(model, image_data)  # 画像データを処理する
+            prediction = predict_chocolate(image_data)
             return JsonResponse({'prediction': prediction})
+        else:
+            return JsonResponse({'error': 'No image data received'}, status=400)
+
+# class KinokoView(TemplateView):
+#     template_name = 'diary/kinoko.html'
+#
+#     def post(self, request, *args, **kwargs):
+#         data = json.loads(request.body)
+#         image_data = data.get('image')
+#         if image_data:
+#             prediction = predict_kinoko(image_data)
+#             return JsonResponse({'prediction': prediction})
+#         else:
+#             return JsonResponse({'error': 'No image data received'}, status=400)
+
+class KinokoView(TemplateView):
+    template_name = 'diary/kinoko.html'
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        image_data = data.get('image')
+        action = data.get('action')  # アクションを取得
+        if image_data:
+            if action == 'degree':
+                prediction = predict_kino_take(image_data)  # モデルを引数として渡す
+                return JsonResponse(prediction)
+            else:
+                prediction = predict_kinoko(image_data)
+                return JsonResponse({'prediction': prediction})
         else:
             return JsonResponse({'error': 'No image data received'}, status=400)

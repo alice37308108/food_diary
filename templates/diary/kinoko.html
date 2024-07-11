@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <style>
+        .camera-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 10px auto;
+        }
+
+        #camera, #snapshot {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        .button-margin {
+            margin: 10px 5px;
+        }
+
+        #prediction-result {
+            margin-top: 10px;
+        }
+
+        .text-center {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+    <h5 class="text-center">きのこ・たけのこを判定🍄</h5>
+</head>
+<body>
+    <div class="text-center">
+        <div class="camera-container">
+            <video id="camera" width="320" height="240" autoplay></video>
+            <canvas id="snapshot" width="320" height="240" style="display: none; position: absolute; top: 0; left: 0;"></canvas>
+        </div>
+        <button id="shoot" type="button" class="btn btn-outline-warning button-margin">撮影</button>
+        <button id="retake" type="button" class="btn btn-outline-warning button-margin" style="display: none;">取り直し</button>
+        <button id="predict" type="button" class="btn btn-outline-warning button-margin" style="display: none;">判定</button>
+        <button id="degree-predict" type="button" class="btn btn-outline-warning button-margin" style="display: none;">度数判定</button>
+
+        <div id="prediction-result"></div>
+    </div>
+    <script>
+        const camera = document.getElementById('camera');
+        const canvas = document.getElementById('snapshot');
+        const context = canvas.getContext('2d');
+        const shootButton = document.getElementById('shoot');
+        const predictButton = document.getElementById('predict');
+        const degreePredictButton = document.getElementById('degree-predict');
+        const resultContainer = document.getElementById('prediction-result');
+        const retakeButton = document.getElementById('retake');
+
+        retakeButton.addEventListener('click', () => {
+            canvas.style.display = 'none';
+            camera.style.display = 'block';
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            predictButton.style.display = 'none';
+            degreePredictButton.style.display = 'none';
+            retakeButton.style.display = 'none';
+            resultContainer.textContent = '';
+        });
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+            .then(stream => {
+                camera.srcObject = stream;
+                camera.onloadedmetadata = () => {
+                    camera.width = 200;
+                    camera.height = 200;
+                    canvas.width = 200;
+                    canvas.height = 200;
+                };
+            })
+            .catch(err => {
+                console.error("カメラの起動に失敗しました:", err);
+            });
+
+        shootButton.addEventListener('click', () => {
+            canvas.style.display = 'block';
+            camera.style.display = 'none';
+            context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+            predictButton.style.display = 'inline';
+            degreePredictButton.style.display = 'inline';
+            retakeButton.style.display = 'inline';
+        });
+
+        const sendPredictionRequest = (action) => {
+            const imageData = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
+            const csrftoken = document.querySelector('[name=csrf-token]').content;
+
+            fetch('/kinoko/', {
+                method: 'POST',
+                body: JSON.stringify({ image: imageData, action: action }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (action === 'degree') {
+                    resultContainer.textContent = `きのこ度: ${data['きのこ度']}%, たけのこ度: ${data['たけのこ度']}%`;
+                } else {
+                    resultContainer.textContent = '判定結果: ' + data.prediction;
+                }
+            })
+            .catch(error => console.error('エラー:', error));
+        };
+
+        predictButton.addEventListener('click', () => sendPredictionRequest('normal'));
+        degreePredictButton.addEventListener('click', () => sendPredictionRequest('degree'));
+    </script>
+    </div>
+</body>
+</html>
+{% endblock %}
