@@ -7,13 +7,10 @@ from django.http import Http404
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import ListView, TemplateView, CreateView, DetailView, UpdateView
 
 from diary.forms import DiaryModelForm, MealModelForm
 from diary.models import Diary, Meal, RegularExpressionWord
-from .forms import ImageUploadForm
-#from .predict import predict_chocolate, load_chocolate_model, predict_kinoko, load_kinoko_model # predict.py から適切な関数とモデルをインポート
 from .predict import predict_chocolate, predict_kinoko, predict_kino_take
 from .utils import register_event
 
@@ -196,30 +193,11 @@ class RegularExpressionView(TemplateView):
         return context
 
 
-# class BiscuitView(View):
-#     form_class = ImageUploadForm
-#     template_name = 'diary/biscuit.html'
-#
-#     def get(self, request, *args, **kwargs):
-#         form = self.form_class()
-#         return render(request, self.template_name, {'form': form})
-#
-#     def post(self, request, *args, **kwargs):
-#         # JSONデータを読み込む
-#         data = json.loads(request.body)
-#         image_data = data.get('image')
-#         if image_data:
-#             # 画像データを処理して推論を行う
-#             prediction = predict(model, image_data)  # ここで適切に画像データを処理する必要がある
-#             return JsonResponse({'prediction': prediction})
-#         else:
-#             return JsonResponse({'error': 'No image data received'}, status=400)
-
-
-
-
-
 class BiscuitView(TemplateView):
+    """
+    ビスケットの分類を行うためのViewクラス
+    POSTメソッドが呼び出された際には、リクエストボディから画像データを取得し、ビスケットの分類を行うモデルを用いて推論を行う
+    """
     template_name = 'diary/biscuit.html'
 
     def post(self, request, *args, **kwargs):
@@ -231,19 +209,12 @@ class BiscuitView(TemplateView):
         else:
             return JsonResponse({'error': 'No image data received'}, status=400)
 
-# class KinokoView(TemplateView):
-#     template_name = 'diary/kinoko.html'
-#
-#     def post(self, request, *args, **kwargs):
-#         data = json.loads(request.body)
-#         image_data = data.get('image')
-#         if image_data:
-#             prediction = predict_kinoko(image_data)
-#             return JsonResponse({'prediction': prediction})
-#         else:
-#             return JsonResponse({'error': 'No image data received'}, status=400)
 
 class KinokoView(TemplateView):
+    """
+    きのことたけのこの分類を行うためのViewクラス。
+    POSTメソッドが呼び出された際には、リクエストボディから画像データを取得し、きのことたけのこの分類を行うモデルを用いて推論を行う。
+    """
     template_name = 'diary/kinoko.html'
 
     def post(self, request, *args, **kwargs):
