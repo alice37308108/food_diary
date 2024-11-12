@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'diary.apps.DiaryConfig',
     'accounts.apps.AccountsConfig',
     'django_bootstrap5',
+    'gratitude.apps.GratitudeConfig',
 ]
 
 MIDDLEWARE = [

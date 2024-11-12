@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div style="text-align: center;">
+        ジャンル一覧🎠
+        <!-- リストの開始タグはループの外に -->
+        <ul class="list-group list-group-flush">
+            {% for category in categories %}
+                <!-- リスト項目のみループ内で作成 -->
+                <li class="list-group-item">
+                    <a href="{% url 'gratitude_list' category.id %}">{{ category.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <img src="{% static "gratitude/images/obu_flower.png" %}" alt="okay" class="img-fluid"
+             style="padding: 20px; max-width: 40%; height: auto;">
+        <br>
+        <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:index' %}'">Topへ戻る</button>
+    </div>
+{% endblock %}

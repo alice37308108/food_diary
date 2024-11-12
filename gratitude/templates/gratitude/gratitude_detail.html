@@ -1,0 +1,14 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>感謝フレーズ詳細</title>
+</head>
+<body>
+    <h1>感謝フレーズ詳細</h1>
+    <p>ジャンル: {{ phrase.get_category_display }}</p>
+    <p>フレーズ: {{ phrase.text }}</p>
+    <a href="{% url 'gratitude_list' %}">一覧に戻る</a>
+</body>
+</html>

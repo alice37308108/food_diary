@@ -8,7 +8,7 @@ urlpatterns = [
     path('', include('diary.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-
+    path('gratitude/', include('gratitude.urls')),
 ]
 
 # if settings.DEBUG:

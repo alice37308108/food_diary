@@ -1,0 +1,17 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>感謝フレーズフォーム</title>
+</head>
+<body>
+    <h1>{% if object %}感謝フレーズを編集{% else %}新しい感謝フレーズを追加{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">保存</button>
+    </form>
+    <a href="{% url 'gratitude_list' %}">一覧に戻る</a>
+</body>
+</html>
