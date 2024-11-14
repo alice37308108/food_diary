@@ -17,9 +17,9 @@
             <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:mago' %}">
                 <i class="fa-solid fa-file"></i> 腸活メモ
             </button>
-            <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:biscuit' %}">
-                <i class="fa-regular fa-face-smile"></i> ビスケット
-            </button>
+{#            <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:biscuit' %}">#}
+{#                <i class="fa-regular fa-face-smile"></i> ビスケット#}
+{#            </button>#}
             <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:kinoko' %}">
                 <i class="fa-regular fa-face-smile"></i> きのこ
             </button>
@@ -28,26 +28,30 @@
 
         {% if user.is_authenticated %}
             <p>
+                <button type="button" class="btn btn-outline-warning"
+                        onclick="location.href={% url 'gratitude_category_select' %}">
+                    <i class="fa-solid fa-heart"></i> gratitude
+                </button>
                 {#            <button type="button" class="btn btn-outline-primary">Primary</button>#}
-                <button type="button" class="btn btn-outline-warning"
-                        onclick="location.href={% url 'diary:create_diary' %}">
-                    <i class="fa-solid fa-check"></i> 日記登録
-                </button>
-                <button type="button" class="btn btn-outline-warning"
-                        onclick="location.href={% url 'diary:create_meal' %}">
-                    <i class="fa-solid fa-fish"></i> 食事登録
-                </button>
-
-                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:list' %}">
-                    <i class="fa-regular fa-pen-to-square"></i> 一覧
-                </button>
-
-                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:input_comment' %}">
-                    <i class="fa-regular fa-smile"></i> つぶやく
-                </button>
-                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:message' %}">
-                    <i class="fa-regular fa-heart"></i> メッセージ
-                </button>
+{#                <button type="button" class="btn btn-outline-warning"#}
+{#                        onclick="location.href={% url 'diary:create_diary' %}">#}
+{#                    <i class="fa-solid fa-check"></i> 日記登録#}
+{#                </button>#}
+{#                <button type="button" class="btn btn-outline-warning"#}
+{#                        onclick="location.href={% url 'diary:create_meal' %}">#}
+{#                    <i class="fa-solid fa-fish"></i> 食事登録#}
+{#                </button>#}
+{##}
+{#                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:list' %}">#}
+{#                    <i class="fa-regular fa-pen-to-square"></i> 一覧#}
+{#                </button>#}
+{##}
+{#                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:input_comment' %}">#}
+{#                    <i class="fa-regular fa-smile"></i> つぶやく#}
+{#                </button>#}
+{#                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:message' %}">#}
+{#                    <i class="fa-regular fa-heart"></i> メッセージ#}
+{#                </button>#}
 {#                <button type="button" class="btn btn-outline-warning" onclick="location.href={% url 'diary:regular_expression' %}">#}
 {#                    <i class="fa-regular fa-lemon"></i> 正規表現#}
 {#                </button>#}
