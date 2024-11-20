@@ -5,22 +5,57 @@
         🌸word一覧🌸
         <ul class="list-group list-group-flush">
             {% for phrase in object_list %}
-                <!-- リスト項目のみループ内で作成 -->
                 <li class="list-group-item">
-                {{ phrase.text }}
+                    {{ phrase.text }}
+                </li>
             {% empty %}
                 このカテゴリーにはまだ単語が登録されていません。
             {% endfor %}
         </ul>
 
-
         <img src="{% static "gratitude/images/obu_bouquet.png" %}" alt="okay" class="img-fluid"
              style="padding: 20px; max-width: 40%; height: auto;">
         <br>
-        <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'gratitude_category_select' %}'">
+
+        <!-- ページネーションリンク -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">最初</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">前</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">最初</span></li>
+                    <li class="page-item disabled"><span class="page-link">前</span></li>
+                {% endif %}
+
+                <li class="page-item active bg-warning text-white">
+                    <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">次</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">最後</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">次</span></li>
+                    <li class="page-item disabled"><span class="page-link">最後</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <br>
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'gratitude_category_select' %}'">
             一覧へ戻る
         </button>
 
-        {#        <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'gratitude:gratitude_category_select' %}'">カテゴリー選択に戻る</button>#}
+
     </div>
 {% endblock %}
