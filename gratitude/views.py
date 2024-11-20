@@ -14,7 +14,7 @@ class GratitudePhraseListView(ListView):
     model = GratitudePhrase
     template_name = 'gratitude/gratitude_list.html'  # 使用するテンプレート名
     context_object_name = 'phrases'  # テンプレート内で使う変数名
-    paginate_by = 10 # 1ページに表示する件数
+    paginate_by = 5 # 1ページに表示する件数
 
     def get_queryset(self):
         # URLからカテゴリーのIDを取得
