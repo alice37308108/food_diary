@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div style="text-align: center;">
+        🌟今日意識する言葉を選んでみる？🌟
+        <br>
+        <br>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-outline-warning">選択</button>
+        </form>
+
+        {% if recommended_phrase %}
+            <hr>
+            <b>{{ recommended_phrase.text }}</b>
+            <br>
+            <img src="{% static "gratitude/images/obu_rooting.png" %}" alt="okay" class="img-fluid"
+                 style="padding: 20px; max-width: 40%; height: auto;">
+        {% endif %}
+        <br>
+        <br>
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'gratitude_category_select' %}'">
+            一覧へ戻る
+        </button>
+
+    </div>
+{% endblock %}

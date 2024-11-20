@@ -1,11 +1,13 @@
 from django.urls import path
+
 from .views import (
     GratitudeCategorySelectView,
     GratitudePhraseListView,
     GratitudePhraseDetailView,
     GratitudePhraseCreateView,
     GratitudePhraseUpdateView,
-    GratitudePhraseDeleteView
+    GratitudePhraseDeleteView,
+    GratitudeRecommendationView,
 )
 
 urlpatterns = [
@@ -15,7 +17,8 @@ urlpatterns = [
     path('add/', GratitudePhraseCreateView.as_view(), name='gratitude_create'),
     path('<int:pk>/edit/', GratitudePhraseUpdateView.as_view(), name='gratitude_update'),
     path('<int:pk>/delete/', GratitudePhraseDeleteView.as_view(), name='gratitude_delete'),
-    #path('gratitude/<str:category>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
-    #path('gratitude/<category>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
+    # path('gratitude/<str:category>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
+    # path('gratitude/<category>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
     path('categories/<int:category_id>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
+    path('recommendation/', GratitudeRecommendationView.as_view(), name='gratitude_recommendation'),
 ]
