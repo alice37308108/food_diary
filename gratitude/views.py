@@ -1,11 +1,23 @@
+import json
+import os
 import random
 
+import requests
 from django import forms
+from django.http import JsonResponse
+from django.templatetags.static import static
 from django.urls import reverse_lazy
-from django.views.generic import FormView
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormView
+from dotenv import load_dotenv
 
-from .models import GratitudePhrase, Category
+from .models import Category
+from .models import GratitudePhrase
+
+# from .forms import CategorySelectForm
+
+# .envファイルを読み込む
+load_dotenv()
 
 
 # ジャンル選択のビュー
@@ -70,7 +82,6 @@ class CategorySelectForm(forms.Form):
     )
 
 
-# ジャンル選択とおすすめ表示のビュー
 class GratitudeRecommendationView(FormView):
     template_name = "gratitude/recommendation.html"
     form_class = CategorySelectForm
@@ -92,3 +103,61 @@ class GratitudeRecommendationView(FormView):
     def form_invalid(self, form):
         # 無効な場合、再度フォームを表示
         return self.render_to_response(self.get_context_data(form=form))
+
+    def post(self, request, *args, **kwargs):
+        # 「LINEに送る」ボタンが押された場合
+        if 'send_to_line' in request.POST:
+            return self.send_line_message(request)  # request を渡す
+        else:
+            # 通常のフォーム処理を実行
+            return super().post(request, *args, **kwargs)
+
+    def send_line_message(self, request):
+        access_token = os.getenv("LINE_ACCESS_TOKEN")
+        user_id = os.getenv("LINE_USER_ID")
+
+        url = "https://api.line.me/v2/bot/message/push"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {access_token}"
+        }
+
+        # 画像のURLを静的ファイルとして取得
+        #image_url = request.build_absolute_uri(static("gratitude/images/obu_rooting.png"))
+        image_url = "https://alice-food-diary.com/static/gratitude/images/obu_rooting.png"
+
+        data = {
+            "to": user_id,
+            "messages": [
+                {
+                    "type": "template",
+                    # "text": request.POST.get("message", "Default Message")  # テキストメッセージ
+                    "altText": "今日のことば💛",
+                    "template": {
+                        "type": "buttons",
+                        "thumbnailImageUrl": image_url,
+                        "title": "今日のことば💛",
+                        "text": request.POST.get("message", "Default Message"),  # テキストメッセージ
+                        "actions": [
+                            {
+                                "type": "uri",
+                                "label": "もっと見る",
+                                "uri": "https://alice-food-diary.com"
+                            }
+                        ]
+                    }
+                },
+            ]
+        }
+
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+
+        if response.status_code == 200:
+            return JsonResponse({"status": "success", "message": "メッセージが送信されました"})
+        else:
+            return JsonResponse({
+                "status": "error",
+                "error_code": response.status_code,
+                "error_message": response.text
+            })

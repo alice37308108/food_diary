@@ -17,6 +17,15 @@
             <br>
             <img src="{% static "gratitude/images/obu_rooting.png" %}" alt="okay" class="img-fluid"
                  style="padding: 20px; max-width: 40%; height: auto;">
+            <br>
+            <!-- LINEに送るボタン -->
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="message" value="{{ recommended_phrase.text }}">
+                <button type="submit" name="send_to_line" class="btn btn-outline-warning">
+                    LINEに送る
+                </button>
+            </form>
         {% endif %}
         <br>
         <br>
@@ -24,6 +33,5 @@
                 onclick="location.href='{% url 'gratitude_category_select' %}'">
             一覧へ戻る
         </button>
-
     </div>
 {% endblock %}
