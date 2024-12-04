@@ -7,7 +7,7 @@ from django import forms
 from django.http import JsonResponse
 from django.templatetags.static import static
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.views.generic.edit import FormView
 from dotenv import load_dotenv
 
@@ -161,3 +161,7 @@ class GratitudeRecommendationView(FormView):
                 "error_code": response.status_code,
                 "error_message": response.text
             })
+
+# テンプレートビューの作成
+class MorningAffirmationView(TemplateView):
+    template_name = "gratitude/morning_affirmation.html"

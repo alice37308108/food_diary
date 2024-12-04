@@ -8,6 +8,7 @@ from .views import (
     GratitudePhraseUpdateView,
     GratitudePhraseDeleteView,
     GratitudeRecommendationView,
+    MorningAffirmationView,
 )
 
 urlpatterns = [
@@ -21,4 +22,6 @@ urlpatterns = [
     # path('gratitude/<category>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
     path('categories/<int:category_id>/', GratitudePhraseListView.as_view(), name='gratitude_list'),
     path('recommendation/', GratitudeRecommendationView.as_view(), name='gratitude_recommendation'),
+    path('morning_affirmation/', MorningAffirmationView.as_view(), name='morning_affirmation'),
+
 ]

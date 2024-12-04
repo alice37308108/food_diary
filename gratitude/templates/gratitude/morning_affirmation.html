@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div style="text-align: center;">
+        <h3>Good Morning🐣</h3>
+        <br>
+        <p>今日何を大切にする？大切にしている価値観は何？</p>
+        <p>今日1つ自分を大切にするとしたら何をする？</p>
+        <p>今日誰かを喜ばせるとしたら何をする？</p>
+
+        <img src="{% static "gratitude/images/obu_himawari.png" %}" alt="okay" class="img-fluid"
+             style="padding: 20px; max-width: 40%; height: auto;">
+        <br>
+
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'gratitude_category_select' %}'">
+            一覧へ戻る
+        </button>
+
+
+    </div>
+{% endblock %}
