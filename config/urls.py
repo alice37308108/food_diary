@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('gratitude/', include('gratitude.urls')),
+    path('vitamin/', include('vitamin.urls', namespace='vitamin')),
 ]
 
 # if settings.DEBUG:

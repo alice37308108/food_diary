@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% load vitamin_filters %}
+{% block content %}
+    {% load static %}
+    <div style="text-align: center;">
+        🌸ビタミンC管理🌸
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{{ today|date:"Y年m月d日" }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>進捗状況</h5>
+                    <h4>{{ intake.intake_count }} / {{ intake.daily_goal }} 杯</h4>
+
+                    <div class="progress" style="height: 25px; margin-bottom: 10px;">
+                        <div class="progress-bar bg-warning" role="progressbar"
+                             style="width: {{ progress }}%;"
+                             aria-valuenow="{{ intake.intake_count }}"
+                             aria-valuemin="0"
+                             aria-valuemax="{{ intake.daily_goal }}">
+                            {{ progress|floatformat:0 }}%
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        {% if is_on_track %}
+                            <p class="text-success">現在の時間帯の目標（{{ time_goal }}杯）を達成しています！</p>
+                        {% else %}
+                            {% with remaining=time_goal|subtract:intake.intake_count %}
+                                <p class="text-danger">現在の時間帯では {{ time_goal }}杯が目標です。あと{{ remaining }}杯頑張りましょう！</p>
+                            {% endwith %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <form method="post" class="d-flex justify-content-center gap-2">
+                        {% csrf_token %}
+                        <button type="submit" name="action" value="decrement" class="btn btn-outline-danger">
+                            -1
+                        </button>
+                        <button type="submit" name="action" value="increment" class="btn btn-outline-success">
+                            +1
+                        </button>
+                        <button type="submit" name="action" value="reset" class="btn btn-outline-secondary">
+                            リセット
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mb-4">
+                    <h5>目標設定</h5>
+                    <form method="post" class="d-flex justify-content-center gap-2">
+                        {% csrf_token %}
+                        <input type="number" name="daily_goal" class="form-control" value="{{ intake.daily_goal }}"
+                               min="1" max="50" style="max-width: 80px;">
+                        <button type="submit" name="action" value="update_goal" class="btn btn-outline-warning">
+                            更新
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">今日のスケジュール提案</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for item in schedule %}
+                        <li class="list-group-item">
+                            {{ item.時間帯 }}: {{ item.目標 }}杯
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <img src="{% static 'gratitude/images/obu_bouquet.png' %}" alt="vitamin" class="img-fluid"
+             style="padding: 20px; max-width: 40%; height: auto;">
+        <br>
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'vitamin:history' %}'">
+            履歴を見る
+        </button>
+
+    </div>
+{% endblock %}

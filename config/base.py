@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'django_bootstrap5',
     'gratitude.apps.GratitudeConfig',
+    'vitamin.apps.VitaminConfig',
 ]
 
 MIDDLEWARE = [

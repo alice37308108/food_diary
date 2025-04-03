@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% load vitamin_filters %}
+{% block content %}
+    <div style="text-align: center;">
+        🌸ビタミンC履歴🌸
+        
+        <div class="card shadow-sm mx-auto" style="max-width: 800px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">過去7日間の記録</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for intake in intakes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ intake.date|date:"Y/m/d (D)" }}</span>
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    {{ intake.intake_count }} / {{ intake.daily_goal }} 杯
+                                </div>
+                                <div style="width: 150px;">
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {% if intake.is_completed %}bg-warning{% else %}bg-secondary{% endif %}" 
+                                            role="progressbar" 
+                                            style="width: {{ intake.get_progress_percentage }}%;">
+                                            {{ intake.get_progress_percentage|floatformat:0 }}%
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if intake.is_completed %}
+                                    <span class="badge bg-warning text-dark ms-2">達成</span>
+                                {% else %}
+                                    <span class="badge bg-secondary ms-2">未達成</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">
+                            記録がありません。
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="row justify-content-center" style="max-width: 800px; margin: 0 auto 20px auto;">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">週間サマリー</h5>
+                        <div class="text-center">
+                            <h1 class="display-4">
+                                {{ intakes|length }}日分
+                            </h1>
+                            <p class="text-muted">記録日数</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">達成状況</h5>
+                        <div class="text-center">
+                            <h1 class="display-4">
+                                {% with completed=0 %}
+                                    {% for intake in intakes %}
+                                        {% if intake.is_completed %}
+                                            {% with completed=completed|add:1 %}{% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ completed }} / 7
+                                {% endwith %}
+                            </h1>
+                            <p class="text-muted">達成日数</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <img src="{% static 'gratitude/images/obu_bouquet.png' %}" alt="vitamin history" class="img-fluid"
+             style="padding: 20px; max-width: 40%; height: auto;">
+        <br>
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'vitamin:home' %}'">
+            戻る
+        </button>
+
+    </div>
+{% endblock %}
