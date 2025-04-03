@@ -1,14 +1,18 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.utils import timezone
 from datetime import timedelta
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.utils import timezone
+
 from .models import VitaminIntake
+
 
 @login_required
 def home(request):
     # 現在のローカル日時を取得（タイムゾーンを考慮）
     today = timezone.localtime(timezone.now()).date()
+    current_hour = timezone.localtime(timezone.now()).hour
 
     # 今日の記録を取得または作成
     intake, created = VitaminIntake.objects.get_or_create(
@@ -46,38 +50,84 @@ def home(request):
 
         return redirect('vitamin:home')
 
-    # 時間帯に基づく目標計算（タイムゾーンを考慮）
-    current_hour = timezone.localtime(timezone.now()).hour
-    if current_hour >= 6 and current_hour < 12:
-        time_goal = int(intake.daily_goal * 0.3)  # 朝 30%
-    elif current_hour >= 12 and current_hour < 18:
-        time_goal = int(intake.daily_goal * 0.7)  # 昼 70%
-    elif current_hour >= 18 and current_hour < 22:
-        time_goal = int(intake.daily_goal * 0.9)  # 夕方 90%
+    # 時間帯に基づく目標計算（個別の時間帯目標）
+    if current_hour >= 6 and current_hour < 9:
+        current_period_goal = int(intake.daily_goal * 0.2)  # 朝食時 20%
+        time_period = "朝食時（6-9時）"
+    elif current_hour >= 9 and current_hour < 12:
+        current_period_goal = int(intake.daily_goal * 0.1)  # 午前中 10%
+        time_period = "午前中（9-12時）"
+    elif current_hour >= 12 and current_hour < 14:
+        current_period_goal = int(intake.daily_goal * 0.2)  # 昼食時 20%
+        time_period = "昼食時（12-14時）"
+    elif current_hour >= 14 and current_hour < 18:
+        current_period_goal = int(intake.daily_goal * 0.2)  # 午後 20%
+        time_period = "午後（14-18時）"
+    elif current_hour >= 18 and current_hour < 20:
+        current_period_goal = int(intake.daily_goal * 0.2)  # 夕食時 20%
+        time_period = "夕食時（18-20時）"
+    elif current_hour >= 20 and current_hour < 22:
+        current_period_goal = int(intake.daily_goal * 0.1)  # 夜 10%
+        time_period = "夜（20-22時）"
     else:
-        time_goal = intake.daily_goal  # 夜 100%
+        current_period_goal = 0  # 深夜は追加摂取なし
+        time_period = "深夜/早朝（22-6時）"
+
+    # 現在の時間帯までの累計目標（これまでの時間帯も含む）
+    if current_hour >= 6 and current_hour < 9:
+        cumulative_goal = int(intake.daily_goal * 0.2)  # 朝食時まで
+    elif current_hour >= 9 and current_hour < 12:
+        cumulative_goal = int(intake.daily_goal * 0.3)  # 午前中まで
+    elif current_hour >= 12 and current_hour < 14:
+        cumulative_goal = int(intake.daily_goal * 0.5)  # 昼食時まで
+    elif current_hour >= 14 and current_hour < 18:
+        cumulative_goal = int(intake.daily_goal * 0.7)  # 午後まで
+    elif current_hour >= 18 and current_hour < 20:
+        cumulative_goal = int(intake.daily_goal * 0.9)  # 夕食時まで
+    elif current_hour >= 20:
+        cumulative_goal = intake.daily_goal  # 夜以降は全て
+    else:
+        cumulative_goal = 0  # 深夜は摂取なし
+
+    # 現在時刻までに摂取すべき量と実際の摂取量の差を計算
+    remaining_for_period = max(0, current_period_goal)
+    remaining_for_cumulative = max(0, cumulative_goal - intake.intake_count)
 
     # 提案スケジュール
     schedule = [
-        {"時間帯": "朝食時 (6-9時)", "目標": int(intake.daily_goal * 0.2)},
-        {"時間帯": "午前中 (9-12時)", "目標": int(intake.daily_goal * 0.1)},
-        {"時間帯": "昼食時 (12-14時)", "目標": int(intake.daily_goal * 0.2)},
-        {"時間帯": "午後 (14-18時)", "目標": int(intake.daily_goal * 0.2)},
-        {"時間帯": "夕食時 (18-20時)", "目標": int(intake.daily_goal * 0.2)},
-        {"時間帯": "夜 (20-22時)", "目標": int(intake.daily_goal * 0.1)},
+        {"時間帯": "朝食時 (6-9時)", "目標": int(intake.daily_goal * 0.2), "残り": max(0,
+                                                                                       int(intake.daily_goal * 0.2) - (
+                                                                                           intake.intake_count if current_hour >= 6 and current_hour < 9 else 0))},
+        {"時間帯": "午前中 (9-12時)", "目標": int(intake.daily_goal * 0.1), "残り": max(0,
+                                                                                        int(intake.daily_goal * 0.1) - (
+                                                                                            intake.intake_count if current_hour >= 9 and current_hour < 12 else 0))},
+        {"時間帯": "昼食時 (12-14時)", "目標": int(intake.daily_goal * 0.2), "残り": max(0,
+                                                                                         int(intake.daily_goal * 0.2) - (
+                                                                                             intake.intake_count if current_hour >= 12 and current_hour < 14 else 0))},
+        {"時間帯": "午後 (14-18時)", "目標": int(intake.daily_goal * 0.2), "残り": max(0,
+                                                                                       int(intake.daily_goal * 0.2) - (
+                                                                                           intake.intake_count if current_hour >= 14 and current_hour < 18 else 0))},
+        {"時間帯": "夕食時 (18-20時)", "目標": int(intake.daily_goal * 0.2), "残り": max(0,
+                                                                                         int(intake.daily_goal * 0.2) - (
+                                                                                             intake.intake_count if current_hour >= 18 and current_hour < 20 else 0))},
+        {"時間帯": "夜 (20-22時)", "目標": int(intake.daily_goal * 0.1), "残り": max(0, int(intake.daily_goal * 0.1) - (
+            intake.intake_count if current_hour >= 20 and current_hour < 22 else 0))},
     ]
 
     context = {
         'intake': intake,
         'progress': intake.get_progress_percentage(),
-        'time_goal': time_goal,
-        'is_on_track': intake.intake_count >= time_goal,
+        'current_period_goal': current_period_goal,
+        'time_period': time_period,
+        'cumulative_goal': cumulative_goal,
+        'remaining_for_period': remaining_for_period,
+        'remaining_for_cumulative': remaining_for_cumulative,
+        'is_on_track': intake.intake_count >= cumulative_goal,
         'schedule': schedule,
-        'today': today,  # 今日の日付をコンテキストに追加
+        'today': today,
     }
 
     return render(request, 'vitamin/home.html', context)
-
 
 @login_required
 def history(request):
@@ -97,7 +147,7 @@ def history(request):
 
     context = {
         'intakes': intakes,
-        'today': end_date,  # 今日の日付をコンテキストに追加
+        'today': end_date,
     }
 
     return render(request, 'vitamin/history.html', context)

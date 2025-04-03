@@ -2,7 +2,6 @@
 {% load static %}
 {% load vitamin_filters %}
 {% block content %}
-    {% load static %}
     <div style="text-align: center;">
         🌸ビタミンC管理🌸
 
@@ -27,11 +26,9 @@
 
                     <div class="mt-2">
                         {% if is_on_track %}
-                            <p class="text-success">現在の時間帯の目標（{{ time_goal }}杯）を達成しています！</p>
+                            <p class="text-success">今日の目標（{{ cumulative_goal }}杯）を達成しています！</p>
                         {% else %}
-                            {% with remaining=time_goal|subtract:intake.intake_count %}
-                                <p class="text-danger">現在の時間帯では {{ time_goal }}杯が目標です。あと{{ remaining }}杯頑張りましょう！</p>
-                            {% endwith %}
+                            <p class="text-danger">{{ time_period }}では {{ current_period_goal }}杯が目標です。<br>累計で {{ cumulative_goal }}杯を目指しましょう！あと{{ remaining_for_cumulative }}杯頑張りましょう！</p>
                         {% endif %}
                     </div>
                 </div>
@@ -72,8 +69,16 @@
             <div class="card-body">
                 <ul class="list-group list-group-flush">
                     {% for item in schedule %}
-                        <li class="list-group-item">
-                            {{ item.時間帯 }}: {{ item.目標 }}杯
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ item.時間帯 }}</span>
+                            <div>
+                                <span class="badge bg-primary">目標: {{ item.目標 }}杯</span>
+                                {% if item.残り > 0 %}
+                                    <span class="badge bg-warning text-dark">残り: {{ item.残り }}杯</span>
+                                {% else %}
+                                    <span class="badge bg-success">達成済み</span>
+                                {% endif %}
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
