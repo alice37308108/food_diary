@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% load gut_health_filters %}
+{% block content %}
+    <div style="text-align: center;">
+        <h3>🌱腸活チェック🌱</h3>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">{{ today|date:"Y年m月d日" }}</h4>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">まごはやさしいチェック</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">食材</th>
+                                <th style="width: 15%;">あさ</th>
+                                <th style="width: 15%;">ひる</th>
+                                <th style="width: 15%;">よる</th>
+                                <th style="width: 15%;">達成</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in food_categories %}
+                            <tr>
+                                <td class="text-start">
+                                    <div><strong>{{ category.key }}：{{ category.name }}</strong></div>
+                                    <small class="text-muted">{{ category.examples }}</small>
+                                </td>
+                                {% for time in meal_times %}
+                                <td class="text-center align-middle">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="category" value="{{ category.key }}">
+                                        <input type="hidden" name="meal" value="{{ time }}">
+                                        <button type="submit" name="action" value="toggle_check" 
+                                            class="btn btn-sm rounded-circle {% if checks|get_item:time|get_item:category.key %}btn-info{% else %}btn-light{% endif %}"
+                                            style="width: 30px; height: 30px;">
+                                            {% if checks|get_item:time|get_item:category.key %}✓{% endif %}
+                                        </button>
+                                    </form>
+                                </td>
+                                {% endfor %}
+                                <td class="text-center align-middle">
+                                    <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center 
+                                        {% if achievement_status|get_item:category.key %}bg-primary text-white{% else %}bg-light{% endif %}" 
+                                        style="width: 30px; height: 30px;">
+                                        {% if achievement_status|get_item:category.key %}✓{% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">今日の調子</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">今日の調子は？</label>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>悪い🥲</span>
+                            <span>良い🥰</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            {% for i in '12345'|make_list %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="mood" id="mood{{ i }}" value="{{ i }}"
+                                    {% if mood == i %}checked{% endif %}>
+                                <label class="form-check-label" for="mood{{ i }}">{{ i }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="memo" class="form-label">メモ</label>
+                        <textarea class="form-control" id="memo" name="memo" rows="3" placeholder="今日の食事や体調のメモを残しましょう">{{ memo }}</textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" name="action" value="save_mood_memo" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <img src="{% static 'images/templates.png' %}" alt="腸活" class="img-fluid"
+             style="padding: 20px; max-width: 40%; height: auto;">
+        <br>
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'gut_health:history' %}'">
+            履歴を見る
+        </button>
+    </div>
+{% endblock %}

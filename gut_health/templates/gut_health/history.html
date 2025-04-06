@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div style="text-align: center;">
+        🌱まごはやさしい腸活チェック - 履歴🌱
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">調子・食材摂取履歴</h4>
+            </div>
+            <div class="card-body">
+                <form method="get" class="mb-3">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label for="mood_filter" class="form-label">調子フィルター</label>
+                            <select class="form-select" id="mood_filter" name="mood">
+                                <option value="">すべて</option>
+                                {% for i in '12345'|make_list %}
+                                <option value="{{ i }}" {% if mood_filter == i %}selected{% endif %}>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="start_date" class="form-label">開始日</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="end_date" class="form-label">終了日</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                        </div>
+                    </div>
+                    <div class="mt-2 text-center">
+                        <button type="submit" class="btn btn-primary">フィルター</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>達成数</th>
+                                <th>調子</th>
+                                <th>摂取した食材</th>
+                                <th>メモ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for check in checks %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'gut_health:index' %}?date={{ check.date|date:'Y-m-d' }}">
+                                        {{ check.date|date:"Y/m/d" }}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge {% if check.achievement_count >= 7 %}bg-success{% elif check.achievement_count >= 4 %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ check.achievement_count }}/9
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if check.mood %}
+                                        <span class="badge bg-{% if check.mood >= 4 %}success{% elif check.mood >= 3 %}warning{% else %}danger{% endif %}">
+                                            {{ check.mood }}
+                                        </span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% for category in check.achievements %}
+                                        <span class="badge bg-info">{{ category }}</span>
+                                    {% empty %}
+                                        <span class="text-muted">データなし</span>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if check.memo %}
+                                        {{ check.memo|truncatechars:30 }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">該当するデータはありません</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if checks.has_other_pages %}
+                <nav aria-label="履歴ページナビゲーション">
+                    <ul class="pagination justify-content-center">
+                        {% if checks.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">最初</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ checks.previous_page_number }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">前へ</a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in checks.paginator.page_range %}
+                            {% if checks.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > checks.number|add:'-3' and num < checks.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if checks.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ checks.next_page_number }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">次へ</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ checks.paginator.num_pages }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">最後</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'gut_health:index' %}'">
+            今日の記録に戻る
+        </button>
+    </div>
+{% endblock %}
