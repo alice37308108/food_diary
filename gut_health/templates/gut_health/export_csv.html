@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div style="text-align: center;">
+        <h3>🌱腸活チェックデータのエクスポート🌱</h3>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">CSVエクスポート設定</h4>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">エクスポートする期間と条件を設定してください。</p>
+                
+                <form method="get" action="{% url 'gut_health:export_csv' %}">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">開始日</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" 
+                                   value="{{ start_date|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">終了日</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" 
+                                   value="{{ end_date|date:'Y-m-d' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="mood_filter" class="form-label">調子フィルター（任意）</label>
+                        <select class="form-select" id="mood_filter" name="mood">
+                            <option value="">すべて</option>
+                            {% for i in '12345'|make_list %}
+                            <option value="{{ i }}" {% if mood_filter == i %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">特定の調子のデータのみエクスポートする場合に選択してください。</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-download"></i> CSVをダウンロード
+                        </button>
+                        <a href="{% url 'gut_health:history' %}" class="btn btn-outline-secondary">
+                            履歴ページに戻る
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">エクスポートについて</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-start">
+                    <li>ダウンロードされるCSVファイルには、指定した期間の腸活チェックデータが含まれます。</li>
+                    <li>Excel、Googleスプレッドシートなどの表計算ソフトで開くことができます。</li>
+                    <li>日付、調子、達成数、摂取した食材、メモの基本情報に加え、各食材カテゴリと食事時間の詳細なチェック状況も含まれます。</li>
+                </ul>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='{% url 'gut_health:index' %}'">
+            今日の記録に戻る
+        </button>
+    </div>
+{% endblock %}

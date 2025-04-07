@@ -3,13 +3,14 @@
 
 {% block content %}
     <div style="text-align: center;">
-        🌱まごはやさしい腸活チェック - 履歴🌱
+        <h3>🌱腸活チェック - 履歴🌱</h3>
 
         <div class="card shadow-sm mx-auto" style="max-width: 600px; margin-bottom: 20px;">
             <div class="card-header bg-white">
-                <h4 class="mb-0">調子・食材摂取履歴</h4>
+                <h4 class="mb-0">履歴</h4>
             </div>
             <div class="card-body">
+                <!-- フィルターフォーム -->
                 <form method="get" class="mb-3">
                     <div class="row g-2">
                         <div class="col-md-4">
@@ -17,17 +18,20 @@
                             <select class="form-select" id="mood_filter" name="mood">
                                 <option value="">すべて</option>
                                 {% for i in '12345'|make_list %}
-                                <option value="{{ i }}" {% if mood_filter == i %}selected{% endif %}>{{ i }}</option>
+                                    <option value="{{ i }}"
+                                            {% if mood_filter == i %}selected{% endif %}>{{ i }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label for="start_date" class="form-label">開始日</label>
-                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                            <input type="date" class="form-control" id="start_date" name="start_date"
+                                   value="{{ start_date|date:'Y-m-d' }}">
                         </div>
                         <div class="col-md-4">
                             <label for="end_date" class="form-label">終了日</label>
-                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                            <input type="date" class="form-control" id="end_date" name="end_date"
+                                   value="{{ end_date|date:'Y-m-d' }}">
                         </div>
                     </div>
                     <div class="mt-2 text-center">
@@ -35,19 +39,37 @@
                     </div>
                 </form>
 
+                <!-- CSVダウンロードボタン -->
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{% url 'gut_health:export_csv_form' %}" class="btn btn-outline-success me-2">
+                        <i class="fas fa-cog"></i> CSVエクスポート設定
+                    </a>
+                    <form method="get" action="{% url 'gut_health:export_csv' %}">
+                        <!-- 現在のフィルター条件を維持 -->
+                        <input type="hidden" name="mood" value="{{ mood_filter }}">
+                        <input type="hidden" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                        <input type="hidden" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-download"></i> CSVでダウンロード
+                        </button>
+                    </form>
+                </div>
+
+                <!-- データテーブル -->
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead>
-                            <tr>
-                                <th>日付</th>
-                                <th>達成数</th>
-                                <th>調子</th>
-                                <th>摂取した食材</th>
-                                <th>メモ</th>
-                            </tr>
+                        <tr>
+                            <th>日付</th>
+                            <th>達成数</th>
+                            <th>調子</th>
+                            <th>摂取した食材</th>
+                            <th>メモ</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {% for check in checks %}
+                        {% for check in checks %}
                             <tr>
                                 <td>
                                     <a href="{% url 'gut_health:index' %}?date={{ check.date|date:'Y-m-d' }}">
@@ -83,47 +105,53 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            {% empty %}
+                        {% empty %}
                             <tr>
                                 <td colspan="5" class="text-center">該当するデータはありません</td>
                             </tr>
-                            {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
+                <!-- ページネーション -->
                 {% if checks.has_other_pages %}
-                <nav aria-label="履歴ページナビゲーション">
-                    <ul class="pagination justify-content-center">
-                        {% if checks.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">最初</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ checks.previous_page_number }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">前へ</a>
-                        </li>
-                        {% endif %}
-
-                        {% for num in checks.paginator.page_range %}
-                            {% if checks.number == num %}
-                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                            {% elif num > checks.number|add:'-3' and num < checks.number|add:'3' %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ num }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ num }}</a>
-                            </li>
+                    <nav aria-label="履歴ページナビゲーション">
+                        <ul class="pagination justify-content-center">
+                            {% if checks.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page=1&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">最初</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ checks.previous_page_number }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">前へ</a>
+                                </li>
                             {% endif %}
-                        {% endfor %}
 
-                        {% if checks.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ checks.next_page_number }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">次へ</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ checks.paginator.num_pages }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">最後</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                            {% for num in checks.paginator.page_range %}
+                                {% if checks.number == num %}
+                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                {% elif num > checks.number|add:'-3' and num < checks.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page={{ num }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if checks.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ checks.next_page_number }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">次へ</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="?page={{ checks.paginator.num_pages }}&mood={{ mood_filter }}&start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">最後</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 {% endif %}
             </div>
         </div>
