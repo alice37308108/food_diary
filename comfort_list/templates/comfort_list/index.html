@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}心地よさを選ぶリスト{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-6 text-center mb-3">心地よさを選ぶリスト</h1>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+                <a href="{% url 'comfort_list:add_action' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> アクション追加
+                </a>
+                <a href="{% url 'comfort_list:add_happiness' %}" class="btn btn-success">
+                    <i class="fas fa-heart"></i> 小さな幸せ記録
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- カテゴリグリッド -->
+    <div class="row g-3 mb-5">
+        {% for category in categories %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="{% url 'comfort_list:category_actions' category.name %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 category-card">
+                    <div class="card-body text-center">
+                        <div class="display-1 mb-3">{{ category.emoji }}</div>
+                        <h5 class="card-title">{{ category.display_name }}</h5>
+                        <small class="text-muted">
+                            {% with actions_count=category.comfortaction_set.all|length %}
+                                {{ actions_count }} アクション
+                            {% endwith %}
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 最近の実行記録 -->
+    {% if recent_executions %}
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-3">📊 最近の実行記録</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {% for execution in recent_executions %}
+                    <div class="d-flex justify-content-between align-items-center py-2 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div>
+                            <span class="fw-bold">{{ execution.action.name }}</span>
+                            <small class="text-muted ms-2">{{ execution.action.category.emoji }} {{ execution.action.category.display_name }}</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= execution.comfort_level %}
+                                        ⭐
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted">{{ execution.executed_at|date:"n/j H:i" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="text-center mt-3">
+                        <a href="{% url 'comfort_list:action_list' %}" class="btn btn-outline-primary btn-sm">
+                            全ての記録を見る
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                <h4 class="text-muted">まだアクションを実行していません</h4>
+                <p class="text-muted">カテゴリをクリックしてアクションを追加し、心地よさを選ぶ練習を始めましょう！</p>
+                <a href="{% url 'comfort_list:add_action' %}" class="btn btn-primary">
+                    最初のアクションを追加する
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.category-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>
+{% endblock %} 

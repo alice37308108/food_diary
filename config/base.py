@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'gratitude.apps.GratitudeConfig',
     'vitamin.apps.VitaminConfig',
     'gut_health.apps.GutHealthConfig',
+    'comfort_list.apps.ComfortListConfig',
 ]
 
 MIDDLEWARE = [

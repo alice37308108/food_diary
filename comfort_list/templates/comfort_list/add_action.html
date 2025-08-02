@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}アクション追加 - 心地よさを選ぶリスト{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'comfort_list:index' %}">心地よさリスト</a></li>
+                    <li class="breadcrumb-item active">アクション追加</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-plus"></i> 新しいアクションを追加
+                    </h3>
+                    <p class="mb-0 mt-2 opacity-75">心地よさを感じられるアクションを登録しましょう</p>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- アクション名 -->
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                                {{ form.name.label }}
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.name.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- カテゴリ -->
+                        <div class="mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label fw-bold">
+                                {{ form.category.label }}
+                            </label>
+                            {{ form.category }}
+                            <div class="form-text">どのカテゴリの心地よさに関連するアクションですか？</div>
+                            {% for error in form.category.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- 所要時間 -->
+                        <div class="mb-3">
+                            <label for="{{ form.estimated_minutes.id_for_label }}" class="form-label fw-bold">
+                                {{ form.estimated_minutes.label }}
+                            </label>
+                            <div class="input-group">
+                                {{ form.estimated_minutes }}
+                                <span class="input-group-text">分</span>
+                            </div>
+                            <div class="form-text">
+                                目安の時間を設定してください（1-120分）
+                            </div>
+                            {% for error in form.estimated_minutes.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- 説明 -->
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">
+                                {{ form.description.label }}
+                                <span class="text-muted">(任意)</span>
+                            </label>
+                            {{ form.description }}
+                            <div class="form-text">
+                                具体的なやり方や期待する効果があれば記入してください
+                            </div>
+                            {% for error in form.description.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- ボタン -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'comfort_list:index' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> キャンセル
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> アクションを追加
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- アクション例 -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">💡 アクション例</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="example-category">
+                                <strong>🧘‍♀️ 心:</strong>
+                                <ul class="small mb-0 mt-1">
+                                    <li>3分間深呼吸</li>
+                                    <li>感謝を3つ思い浮かべる</li>
+                                    <li>今の気持ちを言葉にする</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-category">
+                                <strong>💪 体:</strong>
+                                <ul class="small mb-0 mt-1">
+                                    <li>5分間ストレッチ</li>
+                                    <li>美味しい水を飲む</li>
+                                    <li>軽く体を動かす</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-category">
+                                <strong>🏠 空間:</strong>
+                                <ul class="small mb-0 mt-1">
+                                    <li>1分片付ける</li>
+                                    <li>部屋の換気をする</li>
+                                    <li>植物に水をあげる</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="example-category">
+                                <strong>⏰ 時間:</strong>
+                                <ul class="small mb-0 mt-1">
+                                    <li>15分の余白時間を作る</li>
+                                    <li>今日やりたいことを決める</li>
+                                    <li>スマホを置く</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

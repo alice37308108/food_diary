@@ -11,6 +11,7 @@ urlpatterns = [
     path('gratitude/', include('gratitude.urls')),
     path('vitamin/', include('vitamin.urls', namespace='vitamin')),
     path('gut_health/', include('gut_health.urls', namespace='gut_health')),
+    path('comfort/', include('comfort_list.urls')),
 ]
 
 # if settings.DEBUG:

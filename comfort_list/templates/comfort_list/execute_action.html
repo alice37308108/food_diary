@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}{{ action.name }} 実行記録 - 心地よさを選ぶリスト{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'comfort_list:index' %}">心地よさリスト</a></li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'comfort_list:category_actions' action.category.name %}">
+                            {{ action.category.emoji }} {{ action.category.display_name }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">実行記録</li>
+                </ol>
+            </nav>
+
+            <!-- アクション情報 -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-body text-center">
+                    <div class="display-3 mb-3">{{ action.category.emoji }}</div>
+                    <h3 class="card-title">{{ action.name }}</h3>
+                    {% if action.description %}
+                    <p class="text-muted">{{ action.description }}</p>
+                    {% endif %}
+                    <div class="row text-center mt-3">
+                        <div class="col-4">
+                            <small class="text-muted d-block">カテゴリ</small>
+                            <span class="fw-bold">{{ action.category.display_name }}</span>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted d-block">所要時間</small>
+                            <span class="fw-bold">{{ action.estimated_minutes }}分</span>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted d-block">実行回数</small>
+                            <span class="fw-bold">{{ action.execution_count }}回</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 実行記録フォーム -->
+            <div class="card border-0 shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-check-circle"></i> 実行完了！記録しましょう
+                    </h4>
+                    <p class="mb-0 mt-2 opacity-75">どの程度心地よさを感じましたか？</p>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- すっきり度 -->
+                        <div class="mb-4">
+                            <label for="{{ form.comfort_level.id_for_label }}" class="form-label fw-bold">
+                                {{ form.comfort_level.label }}
+                            </label>
+                            <div class="comfort-level-selector mb-3">
+                                {% for value, label in form.comfort_level.field.choices %}
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" 
+                                           name="{{ form.comfort_level.name }}" 
+                                           id="comfort_{{ value }}" 
+                                           value="{{ value }}"
+                                           {% if form.comfort_level.value == value %}checked{% endif %}>
+                                    <label class="form-check-label comfort-star-label" for="comfort_{{ value }}">
+                                        <div class="star-rating" data-rating="{{ value }}">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= value %}
+                                                    <span class="star filled">⭐</span>
+                                                {% else %}
+                                                    <span class="star">☆</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <small class="d-block text-center mt-1">
+                                            {% if value == 1 %}あまり...
+                                            {% elif value == 2 %}少し
+                                            {% elif value == 3 %}まあまあ
+                                            {% elif value == 4 %}とても
+                                            {% elif value == 5 %}最高！
+                                            {% endif %}
+                                        </small>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% for error in form.comfort_level.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- メモ -->
+                        <div class="mb-4">
+                            <label for="{{ form.memo.id_for_label }}" class="form-label fw-bold">
+                                {{ form.memo.label }}
+                                <span class="text-muted">(任意)</span>
+                            </label>
+                            {{ form.memo }}
+                            <div class="form-text">
+                                実行してみてどう感じたか、気づいたことがあれば記録してください
+                            </div>
+                            {% for error in form.memo.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- ボタン -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'comfort_list:category_actions' action.category.name %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> 戻る
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save"></i> 記録を保存
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 励ましメッセージ -->
+            <div class="alert alert-info border-0 shadow-sm mt-4">
+                <div class="d-flex align-items-center">
+                    <div class="me-3 text-info">
+                        <i class="fas fa-lightbulb fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="alert-heading mb-1">素晴らしい！</h6>
+                        <p class="mb-0">心地よさを選ぶ実践をお疲れさまでした。小さな一歩の積み重ねが大きな変化につながります。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.comfort-level-selector {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+}
+
+.comfort-star-label {
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+    margin: 0 0.25rem;
+}
+
+.comfort-star-label:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.form-check-input:checked + .comfort-star-label {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 2px solid #28a745;
+}
+
+.star-rating {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.star-rating .star {
+    display: inline-block;
+    margin: 0 1px;
+}
+</style>
+{% endblock %} 

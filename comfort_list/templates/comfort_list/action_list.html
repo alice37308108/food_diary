@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}全ての記録 - 心地よさを選ぶリスト{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'comfort_list:index' %}">心地よさリスト</a></li>
+                    <li class="breadcrumb-item active">全ての記録</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-6">📊 全ての記録</h1>
+                <a href="{% url 'comfort_list:add_action' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> アクション追加
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if actions %}
+    <!-- カテゴリ別表示 -->
+    {% regroup actions by category as category_actions %}
+    {% for category_group in category_actions %}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">
+                {{ category_group.grouper.emoji }} {{ category_group.grouper.display_name }}
+                <small class="text-muted ms-2">({{ category_group.list|length }} アクション)</small>
+            </h4>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for action in category_group.list %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card border action-summary-card">
+                        {% if action.is_favorite %}
+                        <div class="position-absolute top-0 end-0 p-2">
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h6 class="card-title">{{ action.name }}</h6>
+                            
+                            <div class="row text-center small mb-2">
+                                <div class="col-4">
+                                    <span class="text-muted d-block">実行</span>
+                                    <strong>{{ action.execution_count }}回</strong>
+                                </div>
+                                <div class="col-4">
+                                    <span class="text-muted d-block">平均</span>
+                                    <strong>
+                                        {% if action.average_comfort_level > 0 %}
+                                            {{ action.average_comfort_level|floatformat:1 }}★
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <span class="text-muted d-block">時間</span>
+                                    <strong>{{ action.estimated_minutes }}分</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- 最近の実行記録 -->
+                            {% with recent_executions=action.actionexecution_set.all|slice:":3" %}
+                            {% if recent_executions %}
+                            <div class="border-top pt-2 mt-2">
+                                <small class="text-muted d-block mb-1">最近の記録:</small>
+                                {% for execution in recent_executions %}
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>{{ execution.executed_at|date:"n/j H:i" }}</span>
+                                    <span class="text-warning">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= execution.comfort_level %}⭐{% else %}☆{% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% endwith %}
+                            
+                            <div class="d-grid mt-3">
+                                <a href="{% url 'comfort_list:execute_action' action.id %}" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-play"></i> 実行する
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    {% else %}
+    <!-- アクションがない場合 -->
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                <h4 class="text-muted mb-3">まだアクションが登録されていません</h4>
+                <p class="text-muted mb-4">心地よさを感じられるアクションを追加して、記録を始めましょう！</p>
+                <a href="{% url 'comfort_list:add_action' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus"></i> 最初のアクションを追加
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- 統計サマリー -->
+    {% if actions %}
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">📈 統計サマリー</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-6 col-md-3">
+                    <h3 class="text-primary">{{ actions|length }}</h3>
+                    <small class="text-muted">総アクション数</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="text-success">
+                        {% with total_executions=0 %}
+                        {% for action in actions %}
+                            {% if forloop.first %}
+                                {% with total_executions=action.execution_count %}{% endwith %}
+                            {% else %}
+                                {% with total_executions=total_executions|add:action.execution_count %}{% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ total_executions|default:0 }}
+                        {% endwith %}
+                    </h3>
+                    <small class="text-muted">総実行回数</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="text-info">{{ category_actions|length }}</h3>
+                    <small class="text-muted">使用カテゴリ</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="text-warning">
+                        {% with favorite_count=0 %}
+                        {% for action in actions %}
+                            {% if action.is_favorite %}
+                                {% with favorite_count=favorite_count|add:1 %}{% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ favorite_count }}
+                        {% endwith %}
+                    </h3>
+                    <small class="text-muted">お気に入り</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.action-summary-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+}
+
+.action-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important;
+}
+</style>
+{% endblock %} 
