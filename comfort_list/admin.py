@@ -8,9 +8,14 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(ComfortAction)
 class ComfortActionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'user', 'estimated_minutes', 'is_favorite', 'created_at']
-    list_filter = ['category', 'is_favorite', 'created_at']
+    list_display = ['name', 'get_categories', 'user', 'estimated_minutes', 'is_favorite', 'created_at']
+    list_filter = ['categories', 'is_favorite', 'created_at']
     search_fields = ['name', 'description']
+    filter_horizontal = ['categories']  # ManyToManyFieldの編集を簡単にする
+    
+    def get_categories(self, obj):
+        return ', '.join([cat.display_name for cat in obj.categories.all()])
+    get_categories.short_description = 'カテゴリ'
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -21,7 +26,7 @@ class ComfortActionAdmin(admin.ModelAdmin):
 @admin.register(ActionExecution)
 class ActionExecutionAdmin(admin.ModelAdmin):
     list_display = ['action', 'executed_at', 'comfort_level', 'memo']
-    list_filter = ['executed_at', 'comfort_level', 'action__category']
+    list_filter = ['executed_at', 'comfort_level', 'action__categories']
     search_fields = ['action__name', 'memo']
     date_hierarchy = 'executed_at'
 

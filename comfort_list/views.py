@@ -22,7 +22,7 @@ def index(request):
 @login_required
 def action_list(request):
     """全アクション一覧"""
-    actions = ComfortAction.objects.filter(user=request.user).order_by('category', '-is_favorite', 'name')
+    actions = ComfortAction.objects.filter(user=request.user).order_by('-is_favorite', 'name')
     
     context = {
         'actions': actions,
@@ -35,7 +35,7 @@ def category_actions(request, category_name):
     category = get_object_or_404(Category, name=category_name)
     actions = ComfortAction.objects.filter(
         user=request.user, 
-        category=category
+        categories=category
     ).order_by('-is_favorite', 'name')
     
     context = {
@@ -53,8 +53,14 @@ def add_action(request):
             action = form.save(commit=False)
             action.user = request.user
             action.save()
+            form.save_m2m()  # ManyToManyFieldを保存
             messages.success(request, f'アクション「{action.name}」を追加しました！')
-            return redirect('comfort_list:category_actions', category_name=action.category.name)
+            # 最初のカテゴリのページにリダイレクト
+            first_category = action.categories.first()
+            if first_category:
+                return redirect('comfort_list:category_actions', category_name=first_category.name)
+            else:
+                return redirect('comfort_list:index')
     else:
         form = ComfortActionForm()
     
@@ -75,7 +81,12 @@ def execute_action(request, action_id):
             execution.action = action
             execution.save()
             messages.success(request, f'「{action.name}」を実行しました！すっきり度: {execution.get_comfort_level_display()}')
-            return redirect('comfort_list:category_actions', category_name=action.category.name)
+            # 最初のカテゴリのページにリダイレクト
+            first_category = action.categories.first()
+            if first_category:
+                return redirect('comfort_list:category_actions', category_name=first_category.name)
+            else:
+                return redirect('comfort_list:index')
     else:
         form = ActionExecutionForm()
     
@@ -115,3 +126,48 @@ def add_happiness(request):
         'form': form,
     }
     return render(request, 'comfort_list/add_happiness.html', context)
+
+@login_required
+def edit_action(request, action_id):
+    """アクション編集"""
+    action = get_object_or_404(ComfortAction, id=action_id, user=request.user)
+    
+    if request.method == 'POST':
+        form = ComfortActionForm(request.POST, instance=action)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'アクション「{action.name}」を更新しました！')
+            # 最初のカテゴリのページにリダイレクト
+            first_category = action.categories.first()
+            if first_category:
+                return redirect('comfort_list:category_actions', category_name=first_category.name)
+            else:
+                return redirect('comfort_list:index')
+    else:
+        form = ComfortActionForm(instance=action)
+    
+    context = {
+        'form': form,
+        'action': action,
+    }
+    return render(request, 'comfort_list/edit_action.html', context)
+
+@login_required
+def delete_action(request, action_id):
+    """アクション削除"""
+    action = get_object_or_404(ComfortAction, id=action_id, user=request.user)
+    
+    if request.method == 'POST':
+        first_category = action.categories.first()
+        action_name = action.name
+        action.delete()
+        messages.success(request, f'アクション「{action_name}」を削除しました。')
+        if first_category:
+            return redirect('comfort_list:category_actions', category_name=first_category.name)
+        else:
+            return redirect('comfort_list:index')
+    
+    context = {
+        'action': action,
+    }
+    return render(request, 'comfort_list/delete_action.html', context)

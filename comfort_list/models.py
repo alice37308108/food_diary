@@ -6,10 +6,10 @@ class Category(models.Model):
     """心地よさのカテゴリ"""
     CATEGORY_CHOICES = [
         ('heart', '🌱 心'),
-        ('body', '🍔 体'),
+        ('body', '🍔 からだ'),
         ('space', '🏠 空間'),
         ('time', '⏰ 時間'),
-        ('mind', '💡 頭'),
+        ('mind', '💡 思考'),
         ('relationship', '🧸 人間関係'),
         ('hobby', '🌻 好きなこと'),
         ('self', '💝 自分'),
@@ -25,7 +25,7 @@ class Category(models.Model):
 class ComfortAction(models.Model):
     """心地よさアクション"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    categories = models.ManyToManyField(Category, verbose_name="カテゴリ")
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     estimated_minutes = models.PositiveIntegerField(default=5)  # 所要時間（分）
@@ -33,7 +33,8 @@ class ComfortAction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.name} ({self.category})"
+        category_names = ", ".join([cat.display_name for cat in self.categories.all()])
+        return f"{self.name} ({category_names})"
     
     def execution_count(self):
         """実行回数を取得"""

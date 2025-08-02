@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 
-{% block title %}アクション追加 - 心地よさを選ぶリスト{% endblock %}
+{% block title %}アクション編集 - 心地よさを選ぶリスト{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
@@ -10,16 +10,21 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'comfort_list:index' %}">心地よさリスト</a></li>
-                    <li class="breadcrumb-item active">アクション追加</li>
+                    {% with first_category=action.categories.first %}
+                    {% if first_category %}
+                    <li class="breadcrumb-item"><a href="{% url 'comfort_list:category_actions' first_category.name %}">{{ first_category.display_name }}</a></li>
+                    {% endif %}
+                    {% endwith %}
+                    <li class="breadcrumb-item active">アクション編集</li>
                 </ol>
             </nav>
 
             <div class="card border-0 shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-warning text-dark">
                     <h3 class="card-title mb-0">
-                        <i class="fas fa-plus"></i> 新しいアクションを追加
+                        <i class="fas fa-edit"></i> アクションを編集
                     </h3>
-                    <p class="mb-0 mt-2 opacity-75">心地よさを感じられるアクションを登録しましょう</p>
+                    <p class="mb-0 mt-2 opacity-75">「{{ action.name }}」を編集します</p>
                 </div>
                 
                 <div class="card-body">
@@ -97,68 +102,25 @@
 
                         <!-- ボタン -->
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            {% with first_category=action.categories.first %}
+                            {% if first_category %}
+                            <a href="{% url 'comfort_list:category_actions' first_category.name %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> キャンセル
+                            </a>
+                            {% else %}
                             <a href="{% url 'comfort_list:index' %}" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> キャンセル
                             </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> アクションを追加
+                            {% endif %}
+                            {% endwith %}
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save"></i> 変更を保存
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
-
-            <!-- アクション例 -->
-            <div class="card border-0 shadow-sm mt-4">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0">💡 アクション例</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="example-category">
-                                <strong>🧘‍♀️ 心:</strong>
-                                <ul class="small mb-0 mt-1">
-                                    <li>3分間深呼吸</li>
-                                    <li>感謝を3つ思い浮かべる</li>
-                                    <li>今の気持ちを言葉にする</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="example-category">
-                                <strong>🍔 からだ:</strong>
-                                <ul class="small mb-0 mt-1">
-                                    <li>5分間ストレッチ</li>
-                                    <li>美味しい水を飲む</li>
-                                    <li>軽く体を動かす</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="example-category">
-                                <strong>🏠 空間:</strong>
-                                <ul class="small mb-0 mt-1">
-                                    <li>1分片付ける</li>
-                                    <li>部屋の換気をする</li>
-                                    <li>植物に水をあげる</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="example-category">
-                                <strong>⏰ 時間:</strong>
-                                <ul class="small mb-0 mt-1">
-                                    <li>15分の余白時間を作る</li>
-                                    <li>今日やりたいことを決める</li>
-                                    <li>スマホを置く</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

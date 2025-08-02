@@ -10,11 +10,15 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'comfort_list:index' %}">心地よさリスト</a></li>
+                    {% with first_category=action.categories.first %}
+                    {% if first_category %}
                     <li class="breadcrumb-item">
-                        <a href="{% url 'comfort_list:category_actions' action.category.name %}">
-                            {{ action.category.emoji }} {{ action.category.display_name }}
+                        <a href="{% url 'comfort_list:category_actions' first_category.name %}">
+                            {{ first_category.emoji }} {{ first_category.display_name }}
                         </a>
                     </li>
+                    {% endif %}
+                    {% endwith %}
                     <li class="breadcrumb-item active">実行記録</li>
                 </ol>
             </nav>
@@ -22,7 +26,11 @@
             <!-- アクション情報 -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-body text-center">
-                    <div class="display-3 mb-3">{{ action.category.emoji }}</div>
+                    <div class="display-3 mb-3">
+                        {% for category in action.categories.all %}
+                            {{ category.emoji }}{% if not forloop.last %} {% endif %}
+                        {% endfor %}
+                    </div>
                     <h3 class="card-title">{{ action.name }}</h3>
                     {% if action.description %}
                     <p class="text-muted">{{ action.description }}</p>
@@ -30,7 +38,11 @@
                     <div class="row text-center mt-3">
                         <div class="col-4">
                             <small class="text-muted d-block">カテゴリ</small>
-                            <span class="fw-bold">{{ action.category.display_name }}</span>
+                            <span class="fw-bold">
+                                {% for category in action.categories.all %}
+                                    {{ category.display_name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </span>
                         </div>
                         <div class="col-4">
                             <small class="text-muted d-block">所要時間</small>
@@ -114,9 +126,17 @@
 
                         <!-- ボタン -->
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{% url 'comfort_list:category_actions' action.category.name %}" class="btn btn-outline-secondary">
+                            {% with first_category=action.categories.first %}
+                            {% if first_category %}
+                            <a href="{% url 'comfort_list:category_actions' first_category.name %}" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> 戻る
                             </a>
+                            {% else %}
+                            <a href="{% url 'comfort_list:index' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> 戻る
+                            </a>
+                            {% endif %}
+                            {% endwith %}
                             <button type="submit" class="btn btn-success btn-lg">
                                 <i class="fas fa-save"></i> 記録を保存
                             </button>

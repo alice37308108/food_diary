@@ -7,10 +7,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         categories_data = [
             ('heart', '心', '🌱'),
-            ('body', '体', '🍔'),
+            ('body', 'からだ', '🍔'),
             ('space', '空間', '🏠'),
             ('time', '時間', '⏰'),
-            ('mind', '頭', '💡'),
+            ('mind', '思考', '💡'),
             ('relationship', '人間関係', '🧸'),
             ('hobby', '好きなこと', '🌻'),
             ('self', '自分', '💝'),

@@ -63,11 +63,33 @@
                         </div>
                     </div>
                     
-                    <div class="d-grid">
+                    <div class="d-grid gap-2">
                         <a href="{% url 'comfort_list:execute_action' action.id %}" class="btn btn-success">
                             <i class="fas fa-play"></i> 実行する
                         </a>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'comfort_list:edit_action' action.id %}" class="btn btn-outline-warning btn-sm flex-fill">
+                                <i class="fas fa-edit"></i> 編集
+                            </a>
+                            <a href="{% url 'comfort_list:delete_action' action.id %}" class="btn btn-outline-danger btn-sm flex-fill">
+                                <i class="fas fa-trash"></i> 削除
+                            </a>
+                        </div>
                     </div>
+                    
+                    <!-- カテゴリ表示 -->
+                    {% if action.categories.count > 1 %}
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            他のカテゴリ: 
+                            {% for cat in action.categories.all %}
+                                {% if cat != category %}
+                                    <span class="badge bg-light text-dark">{{ cat.emoji }} {{ cat.display_name }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </small>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

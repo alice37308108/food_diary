@@ -51,7 +51,11 @@
                     <div class="d-flex justify-content-between align-items-center py-2 {% if not forloop.last %}border-bottom{% endif %}">
                         <div>
                             <span class="fw-bold">{{ execution.action.name }}</span>
-                            <small class="text-muted ms-2">{{ execution.action.category.emoji }} {{ execution.action.category.display_name }}</small>
+                            <small class="text-muted ms-2">
+                                {% for category in execution.action.categories.all %}
+                                    {{ category.emoji }} {{ category.display_name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </small>
                         </div>
                         <div class="text-end">
                             <div class="text-warning">

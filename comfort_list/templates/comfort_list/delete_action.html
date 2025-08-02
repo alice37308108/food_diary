@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}アクション削除 - 心地よさを選ぶリスト{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'comfort_list:index' %}">心地よさリスト</a></li>
+                    {% with first_category=action.categories.first %}
+                    {% if first_category %}
+                    <li class="breadcrumb-item"><a href="{% url 'comfort_list:category_actions' first_category.name %}">{{ first_category.display_name }}</a></li>
+                    {% endif %}
+                    {% endwith %}
+                    <li class="breadcrumb-item active">アクション削除</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-trash"></i> アクションを削除
+                    </h3>
+                    <p class="mb-0 mt-2 opacity-75">以下のアクションを削除しますか？</p>
+                </div>
+                
+                <div class="card-body">
+                    <!-- アクション情報表示 -->
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle"></i> 削除の確認
+                        </h5>
+                        <p class="mb-0">
+                            この操作は取り消せません。実行記録も含めて完全に削除されます。
+                        </p>
+                    </div>
+
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">削除するアクション</h6>
+                            <h5 class="card-title">{{ action.name }}</h5>
+                            <p class="card-text">
+                                {% for category in action.categories.all %}
+                                <span class="badge bg-secondary">{{ category.emoji }} {{ category.display_name }}</span>
+                                {% endfor %}
+                                <span class="badge bg-info text-dark">{{ action.estimated_minutes }}分</span>
+                                {% if action.is_favorite %}
+                                <span class="badge bg-warning text-dark">⭐ お気に入り</span>
+                                {% endif %}
+                            </p>
+                            {% if action.description %}
+                            <p class="card-text text-muted">{{ action.description }}</p>
+                            {% endif %}
+                            <small class="text-muted">
+                                実行回数: {{ action.execution_count }}回
+                                {% if action.execution_count > 0 %}
+                                | 平均すっきり度: {{ action.average_comfort_level|floatformat:1 }}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- 削除フォーム -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            {% with first_category=action.categories.first %}
+                            {% if first_category %}
+                            <a href="{% url 'comfort_list:category_actions' first_category.name %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> キャンセル
+                            </a>
+                            {% else %}
+                            <a href="{% url 'comfort_list:index' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> キャンセル
+                            </a>
+                            {% endif %}
+                            {% endwith %}
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> 削除する
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

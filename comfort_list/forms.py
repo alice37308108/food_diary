@@ -6,13 +6,15 @@ class ComfortActionForm(forms.ModelForm):
     
     class Meta:
         model = ComfortAction
-        fields = ['name', 'category', 'description', 'estimated_minutes']
+        fields = ['name', 'categories', 'description', 'estimated_minutes']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '例: 1分片付ける、深呼吸する'
             }),
-            'category': forms.Select(attrs={'class': 'form-control'}),
+            'categories': forms.CheckboxSelectMultiple(attrs={
+                'class': 'form-check-input'
+            }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 3,
@@ -27,7 +29,7 @@ class ComfortActionForm(forms.ModelForm):
         }
         labels = {
             'name': 'アクション名',
-            'category': 'カテゴリ',
+            'categories': 'カテゴリ（複数選択可）',
             'description': '説明',
             'estimated_minutes': '所要時間（分）',
         }
