@@ -13,9 +13,25 @@ def index(request):
         action__user=request.user
     ).order_by('-executed_at')[:5]
     
+    # 重複なしの合計アクション数を取得
+    total_actions_count = ComfortAction.objects.filter(user=request.user).count()
+    
+    # 各カテゴリのアクション数を計算（ユーザー別）
+    categories_with_count = []
+    for category in categories:
+        actions_count = ComfortAction.objects.filter(
+            user=request.user, 
+            categories=category
+        ).count()
+        categories_with_count.append({
+            'category': category,
+            'actions_count': actions_count
+        })
+    
     context = {
-        'categories': categories,
+        'categories_with_count': categories_with_count,
         'recent_executions': recent_executions,
+        'total_actions_count': total_actions_count,
     }
     return render(request, 'comfort_list/index.html', context)
 

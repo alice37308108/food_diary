@@ -8,6 +8,28 @@
     <div class="row">
         <div class="col-12">
             <h1 class="display-6 text-center mb-3">心地よさを選ぶリスト</h1>
+            <div class="text-center mb-4">
+                <div class="card border-0 shadow-sm mx-auto" style="max-width: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
+                    <div class="card-body p-4 text-white">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="me-3">
+                                <div class="rounded-circle" style="background-color: rgba(255,255,255,0.2); padding: 8px;">
+                                    <i class="fas fa-heart text-white" style="font-size: 1.2rem;"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="h2 mb-0 fw-bold">{{ total_actions_count }}</div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;">登録済みアクション</div>
+                            </div>
+                        </div>
+                        <div class="position-absolute" style="top: -8px; right: -8px;">
+                            <span class="badge bg-warning text-dark rounded-circle" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-star" style="font-size: 0.7rem;"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
                 <a href="{% url 'comfort_list:add_action' %}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> アクション追加
@@ -21,17 +43,15 @@
 
     <!-- カテゴリグリッド -->
     <div class="row g-3 mb-5">
-        {% for category in categories %}
+        {% for item in categories_with_count %}
         <div class="col-6 col-md-4 col-lg-3">
-            <a href="{% url 'comfort_list:category_actions' category.name %}" class="text-decoration-none">
+            <a href="{% url 'comfort_list:category_actions' item.category.name %}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm h-100 category-card">
                     <div class="card-body text-center">
-                        <div class="display-1 mb-3">{{ category.emoji }}</div>
-                        <h5 class="card-title">{{ category.display_name }}</h5>
+                        <div class="display-1 mb-3">{{ item.category.emoji }}</div>
+                        <h5 class="card-title">{{ item.category.display_name }}</h5>
                         <small class="text-muted">
-                            {% with actions_count=category.comfortaction_set.all|length %}
-                                {{ actions_count }} アクション
-                            {% endwith %}
+                            {{ item.actions_count }} アクション
                         </small>
                     </div>
                 </div>
