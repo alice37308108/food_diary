@@ -22,10 +22,15 @@
                                 <label for="vegetable_type" class="form-label">野菜の種類</label>
                                 <select class="form-select" id="vegetable_type" name="vegetable_type" required>
                                     <option value="">選択してください</option>
-                                    {% for value, label in vegetable_choices %}
-                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% for vegetable_type in vegetable_types %}
+                                        <option value="{{ vegetable_type.id }}">{{ vegetable_type.emoji }} {{ vegetable_type.name }}</option>
                                     {% endfor %}
                                 </select>
+                                <div class="mt-2">
+                                    <a href="{% url 'nukazuke:manage_vegetables' %}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-cog"></i> 野菜を管理
+                                    </a>
+                                </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="custom_name" class="form-label">カスタム名（任意）</label>

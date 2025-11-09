@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import PickledVegetable
+from .models import PickledVegetable, VegetableType
+
+
+@admin.register(VegetableType)
+class VegetableTypeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'emoji', 'is_active', 'created_at']
+    list_filter = ['is_active', 'created_at']
+    search_fields = ['name']
+    list_editable = ['emoji', 'is_active']
+    ordering = ['name']
 
 
 @admin.register(PickledVegetable)

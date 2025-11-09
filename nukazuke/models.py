@@ -3,24 +3,40 @@ from django.utils import timezone
 import random
 
 
+class VegetableType(models.Model):
+    """野菜の種類マスタ"""
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name='野菜名'
+    )
+    emoji = models.CharField(
+        max_length=10,
+        default='🥗',
+        verbose_name='絵文字'
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name='有効'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = '野菜の種類'
+        verbose_name_plural = '野菜の種類'
+        ordering = ['name']
+    
+    def __str__(self):
+        return f"{self.emoji} {self.name}"
+
+
 class PickledVegetable(models.Model):
     """ぬか漬け野菜モデル"""
     
-    VEGETABLE_CHOICES = [
-        ('cucumber', 'きゅうり🥒'),
-        ('eggplant', 'なす🍆'),
-        ('carrot', 'にんじん🥕'),
-        ('cabbage', 'キャベツ🥬'),
-        ('pepper', 'ピーマン🌶️'),
-        ('tomato', 'トマト🍅'),
-        ('radish', 'だいこん🌶️'),
-        ('turnip', 'かぶ🌰'),
-        ('other', 'その他🥗'),
-    ]
-    
-    vegetable_type = models.CharField(
-        max_length=20,
-        choices=VEGETABLE_CHOICES,
+    vegetable_type = models.ForeignKey(
+        VegetableType,
+        on_delete=models.CASCADE,
         verbose_name='野菜の種類'
     )
     custom_name = models.CharField(
@@ -81,25 +97,21 @@ class PickledVegetable(models.Model):
     @property
     def vegetable_emoji(self):
         """野菜の絵文字を取得"""
-        emoji_map = {
-            'cucumber': '🥒',
-            'eggplant': '🍆',
-            'carrot': '🥕',
-            'cabbage': '🥬',
-            'pepper': '🌶️',
-            'tomato': '🍅',
-            'radish': '🌶️',
-            'turnip': '🌰',
-            'other': '🥗',
-        }
-        return emoji_map.get(self.vegetable_type, '🥗')
+        return self.vegetable_type.emoji
     
     @property
     def display_name(self):
         """表示名を取得"""
         if self.custom_name:
             return f"{self.vegetable_emoji}{self.custom_name}"
-        return self.get_vegetable_type_display()
+        return f"{self.vegetable_emoji}{self.vegetable_type.name}"
+    
+    @property
+    def simple_display_name(self):
+        """メッセージ用のシンプルな表示名（絵文字1つ）"""
+        if self.custom_name:
+            return f"{self.vegetable_emoji}{self.custom_name}"
+        return self.vegetable_type.name
     
     def get_reminder_message(self, hours_elapsed):
         """リマインドメッセージを取得"""

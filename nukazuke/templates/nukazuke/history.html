@@ -9,6 +9,43 @@
         <div class="col-12">
             <h1 class="display-6 text-center mb-4">📊 ぬか漬け履歴</h1>
             
+            <!-- 削除ボタン群 -->
+            {% if vegetables %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-trash"></i> 履歴削除</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <form method="post" action="{% url 'nukazuke:delete_completed_history' %}" 
+                                  onsubmit="return confirm('完了済みの履歴をすべて削除しますか？')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-check-circle"></i> 完了済みのみ削除
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <form method="post" action="{% url 'nukazuke:delete_all_history' %}" 
+                                  onsubmit="return confirm('本当にすべての履歴を削除しますか？この操作は取り消せません。')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="fas fa-trash-alt"></i> すべて削除
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="text-muted small">
+                                合計: {{ vegetables|length }}件<br>
+                                完了済み: {{ completed_count }}件
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     {% if vegetables %}
@@ -21,6 +58,7 @@
                                     <th>取り出し日時</th>
                                     <th>漬け時間</th>
                                     <th>状態</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +97,15 @@
                                         {% else %}
                                             <span class="badge bg-secondary">完了</span>
                                         {% endif %}
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'nukazuke:delete_history' vegetable.id %}" 
+                                              class="d-inline" onsubmit="return confirm('{{ vegetable.display_name }}の履歴を削除しますか？')">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i> 削除
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 {% endfor %}
