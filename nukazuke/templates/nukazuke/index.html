@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ぬか漬けリマインダー{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-6 text-center mb-4">🥒 ぬか漬けリマインダー</h1>
+            
+            <!-- 新しい野菜を漬けるフォーム -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-plus"></i> 新しい野菜を漬ける</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'nukazuke:pickle_vegetable' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="vegetable_type" class="form-label">野菜の種類</label>
+                                <select class="form-select" id="vegetable_type" name="vegetable_type" required>
+                                    <option value="">選択してください</option>
+                                    {% for value, label in vegetable_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="custom_name" class="form-label">カスタム名（任意）</label>
+                                <input type="text" class="form-control" id="custom_name" name="custom_name" 
+                                       placeholder="例：小さいきゅうり">
+                            </div>
+                            <div class="col-md-2 mb-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-seedling"></i> 漬ける
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 現在漬けている野菜 -->
+            {% if pickled_vegetables %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-clock"></i> 現在漬けている野菜</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for vegetable in pickled_vegetables %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-0 shadow-sm h-100 
+                                {% if vegetable.hours_pickled >= 72 %}border-danger
+                                {% elif vegetable.hours_pickled >= 48 %}border-warning
+                                {% elif vegetable.hours_pickled >= 24 %}border-info
+                                {% endif %}">
+                                <div class="card-body text-center">
+                                    <div class="display-4 mb-2">{{ vegetable.vegetable_emoji }}</div>
+                                    <h6 class="card-title">{{ vegetable.display_name }}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            漬けた時刻: {{ vegetable.pickled_at|date:"m/d H:i" }}<br>
+                                            経過時間: {{ vegetable.hours_pickled|floatformat:1 }}時間
+                                        </small>
+                                    </p>
+                                    
+                                    <!-- 状態表示 -->
+                                    {% if vegetable.hours_pickled >= 72 %}
+                                        <div class="badge bg-danger mb-2">💀 成仏中</div>
+                                    {% elif vegetable.hours_pickled >= 48 %}
+                                        <div class="badge bg-warning text-dark mb-2">🚨 緊急事態</div>
+                                    {% elif vegetable.hours_pickled >= 24 %}
+                                        <div class="badge bg-info mb-2">⏰ 取り出し時</div>
+                                    {% else %}
+                                        <div class="badge bg-success mb-2">🌱 漬け中</div>
+                                    {% endif %}
+                                    
+                                    <div class="d-grid gap-2">
+                                        <form method="post" action="{% url 'nukazuke:remove_vegetable' vegetable.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-outline-success btn-sm w-100">
+                                                <i class="fas fa-hand-paper"></i> 取り出す
+                                            </button>
+                                        </form>
+                                        
+                                        <!-- テスト用LINEメッセージ送信ボタン -->
+                                        <button type="button" class="btn btn-outline-primary btn-sm w-100" 
+                                                onclick="testLineMessage({{ vegetable.id }})">
+                                            <i class="fab fa-line"></i> テスト送信
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center py-5">
+                    <div class="display-1 mb-3">🥒</div>
+                    <h4 class="text-muted">まだ野菜を漬けていません</h4>
+                    <p class="text-muted">上のフォームから野菜を選んで、ぬか漬けを始めましょう！</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 最近取り出した野菜 -->
+            {% if recent_removed %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-history"></i> 最近取り出した野菜</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for vegetable in recent_removed %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body text-center">
+                                    <div class="h3 mb-2">{{ vegetable.vegetable_emoji }}</div>
+                                    <h6 class="card-title">{{ vegetable.display_name }}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            取り出し: {{ vegetable.removed_at|date:"m/d H:i" }}<br>
+                                            漬け時間: {{ vegetable.hours_pickled|floatformat:1 }}時間
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'nukazuke:history' %}" class="btn btn-outline-secondary">
+                            全ての履歴を見る
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ナビゲーションボタン -->
+<div class="fixed-bottom p-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:index' %}'">
+                    <i class="fas fa-home"></i> ホーム
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function testLineMessage(vegetableId) {
+    if (confirm('テストメッセージを送信しますか？')) {
+        fetch('{% url "nukazuke:test_line_message" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'vegetable_id=' + vegetableId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('メッセージを送信しました！');
+            } else {
+                alert('メッセージの送信に失敗しました: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('エラーが発生しました');
+        });
+    }
+}
+</script>
+
+<style>
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.border-danger {
+    border-left: 4px solid #dc3545 !important;
+}
+
+.border-warning {
+    border-left: 4px solid #ffc107 !important;
+}
+
+.border-info {
+    border-left: 4px solid #0dcaf0 !important;
+}
+</style>
+{% endblock %}

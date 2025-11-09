@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'vitamin.apps.VitaminConfig',
     'gut_health.apps.GutHealthConfig',
     'comfort_list.apps.ComfortListConfig',
+    'nukazuke.apps.NukazukeConfig',
 ]
 
 MIDDLEWARE = [

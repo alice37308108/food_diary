@@ -12,6 +12,7 @@ urlpatterns = [
     path('vitamin/', include('vitamin.urls', namespace='vitamin')),
     path('gut_health/', include('gut_health.urls', namespace='gut_health')),
     path('comfort/', include('comfort_list.urls')),
+    path('nukazuke/', include('nukazuke.urls')),
 ]
 
 # if settings.DEBUG:

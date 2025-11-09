@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ぬか漬け履歴{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-6 text-center mb-4">📊 ぬか漬け履歴</h1>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {% if vegetables %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>野菜</th>
+                                    <th>漬けた日時</th>
+                                    <th>取り出し日時</th>
+                                    <th>漬け時間</th>
+                                    <th>状態</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vegetable in vegetables %}
+                                <tr>
+                                    <td>
+                                        <span class="h5">{{ vegetable.vegetable_emoji }}</span>
+                                        {{ vegetable.display_name }}
+                                    </td>
+                                    <td>{{ vegetable.pickled_at|date:"Y/m/d H:i" }}</td>
+                                    <td>
+                                        {% if vegetable.removed_at %}
+                                            {{ vegetable.removed_at|date:"Y/m/d H:i" }}
+                                        {% else %}
+                                            <span class="badge bg-success">漬け中</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vegetable.removed_at %}
+                                            {{ vegetable.hours_pickled|floatformat:1 }}時間
+                                        {% else %}
+                                            {{ vegetable.hours_pickled|floatformat:1 }}時間（継続中）
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not vegetable.removed_at %}
+                                            {% if vegetable.hours_pickled >= 72 %}
+                                                <span class="badge bg-danger">💀 成仏中</span>
+                                            {% elif vegetable.hours_pickled >= 48 %}
+                                                <span class="badge bg-warning text-dark">🚨 緊急事態</span>
+                                            {% elif vegetable.hours_pickled >= 24 %}
+                                                <span class="badge bg-info">⏰ 取り出し時</span>
+                                            {% else %}
+                                                <span class="badge bg-success">🌱 漬け中</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">完了</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="display-1 mb-3">🥒</div>
+                        <h4 class="text-muted">まだ履歴がありません</h4>
+                        <p class="text-muted">野菜を漬けて履歴を作りましょう！</p>
+                        <a href="{% url 'nukazuke:index' %}" class="btn btn-primary">
+                            <i class="fas fa-seedling"></i> 野菜を漬ける
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ナビゲーションボタン -->
+<div class="fixed-bottom p-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-warning me-2" onclick="location.href='{% url 'nukazuke:index' %}'">
+                    <i class="fas fa-arrow-left"></i> 戻る
+                </button>
+                <button type="button" class="btn btn-outline-warning" onclick="location.href='{% url 'diary:index' %}'">
+                    <i class="fas fa-home"></i> ホーム
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
